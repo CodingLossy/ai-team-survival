@@ -1,0 +1,64 @@
+{
+  "levelId": "interrogation_11",
+  "gameType": "INTERROGATION",
+  "title": "第11关 · 真人密室：隐藏的卧底玩家",
+  "description": "你在密室逃脱里拿到了内鬼身份牌，必须骗过主持人 NPC 和队友的盘问。",
+  "maxTurns": 5,
+  "secretTruth": "刚才灯光熄灭的十秒里，是你悄悄把关键钥匙藏进了自己口袋。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 5 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_dm",
+      "name": "黑衣主持",
+      "role": "密室 NPC",
+      "avatarTag": "hardcore_detective",
+      "personaPrompt": "根据房间机关触发顺序推理谁动了手脚。",
+      "initialStats": {
+        "trust": 70,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "BLUFF_EVIDENCE",
+        "LOCK_ROOM"
+      ]
+    },
+    {
+      "npcId": "npc_teammate",
+      "name": "阿豪",
+      "role": "多疑队友",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "一直盯着你的站位和口袋看。",
+      "initialStats": {
+        "trust": 70,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "INTERRUPT_HINT",
+        "CROSS_CHECK"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "LOCK_ROOM",
+      "description": "怀疑度突破 85，众人投票将你关进小黑屋"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：刚才灯光熄灭的十秒里，是你悄悄把关键钥匙藏进了自己口袋。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：刚才灯光熄灭的十秒里，是你悄悄把关键钥匙藏进了自己口袋。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

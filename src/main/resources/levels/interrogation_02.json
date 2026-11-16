@@ -1,0 +1,67 @@
+{
+  "levelId": "interrogation_02",
+  "gameType": "INTERROGATION",
+  "title": "第2关 · 职场背调：简历上的千万级架构",
+  "description": "你把简历上的外包 CRUD 项目吹成了千万级高并发架构，必须顶住笑面虎 HR 和前同事的交叉盘问。",
+  "maxTurns": 5,
+  "secretTruth": "上家公司其实只有5个人，那个项目日活不到300，用的是单机 MySQL + 定时脚本，根本没有做过分库分表和微服务拆分，但你已经把年薪谈到了45万。",
+  "globalStats": {
+    "suspicion": 25
+  },
+  "winCondition": "turn >= 7 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_hr_linda",
+      "name": "Linda",
+      "role": "笑面虎 HRD",
+      "avatarTag": "smiling_hr",
+      "personaPrompt": "表面温柔客气、笑眯眯地顺着你的话往下问，实则专门拿具体 QPS、压测数据和前司团队规模设套。",
+      "initialStats": {
+        "patience": 65,
+        "trust": 30
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "CROSS_CHECK",
+        "BLUFF_EVIDENCE",
+        "REJECT_OFFER"
+      ]
+    },
+    {
+      "npcId": "npc_witness_mike",
+      "name": "Mike",
+      "role": "前同事证人（电话连线）",
+      "avatarTag": "clueless_colleague",
+      "personaPrompt": "你的前同事，性格大咧咧，总在关键时刻无意间拆台或说出你们以前在小公司挤工位的细节。",
+      "initialStats": {
+        "patience": 80,
+        "trust": 50
+      },
+      "allowedActions": [
+        "INTERRUPT_HINT",
+        "ACCIDENTAL_LEAK",
+        "ASK_DETAIL"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "REJECT_OFFER",
+      "description": "怀疑度突破 85，HR 直接终止背调并撤回 Offer"
+    }
+  ],
+  "playerCards": [
+    "💼 上家公司仅5人，日活不到300",
+    "🖥️ 技术栈只是单机 MySQL + 定时脚本",
+    "🎭 你的口供：主导过千万级高并发微服务拆分"
+  ],
+  "npcKnownFacts": [
+    "行业内知情人士透露该公司规模极小",
+    "你无法说出具体的分库分表路由键与压测 QPS",
+    "前同事 Mike 随时可能说漏嘴你们挤在民宅办公"
+  ]
+}

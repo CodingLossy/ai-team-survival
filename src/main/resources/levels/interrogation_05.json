@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_05",
+  "gameType": "INTERROGATION",
+  "title": "第5关 · 门诊室：装病开假条去云南",
+  "description": "你买好了今晚飞丽江的机票，需要骗过火眼金睛的资深主任开三天病假条。",
+  "maxTurns": 4,
+  "secretTruth": "你其实身体倍棒，昨晚还在熬夜收拾行李箱，今天一早抹了点风油精装头晕。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 4 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_doc",
+      "name": "张主任",
+      "role": "资深内科医生",
+      "avatarTag": "strict_officer",
+      "personaPrompt": "见惯了周一装病开假条的打工人，说话直白一针见血。",
+      "initialStats": {
+        "trust": 70,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "BLUFF_EVIDENCE",
+        "OPEN_BAG_CHECK",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "OPEN_BAG_CHECK",
+      "description": "怀疑度突破 85，医生要求做全套抽血和体温复测"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：你其实身体倍棒，昨晚还在熬夜收拾行李箱，今天一早抹了点风油精装头晕。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：你其实身体倍棒，昨晚还在熬夜收拾行李箱，今天一早抹了点风油精装头晕。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

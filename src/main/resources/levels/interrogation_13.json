@@ -1,0 +1,64 @@
+{
+  "levelId": "interrogation_13",
+  "gameType": "INTERROGATION",
+  "title": "第13关 · 宠物医院：谁把布偶猫剃成了狮子",
+  "description": "你趁室友出差偷偷用推子给他的布偶猫剪了个狮子头，现在猫生病了带到医院。",
+  "maxTurns": 5,
+  "secretTruth": "昨晚你刷短视频学宠物美容，手抖把室友最宝贝的赛级布偶猫剃秃了背。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 5 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_vet",
+      "name": "陈医生",
+      "role": "宠物医生",
+      "avatarTag": "kind_curator",
+      "personaPrompt": "一眼看出毛发是家用电推剪剃的，而不是皮肤病掉毛。",
+      "initialStats": {
+        "trust": 75,
+        "pressure": 45
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "SOFT_PERSUADE",
+        "PASS_CLUE_TO_BOSS"
+      ]
+    },
+    {
+      "npcId": "npc_owner",
+      "name": "阿泽",
+      "role": "猫主人（视频连线）",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "看到猫的瞬间血压飙升，疯狂追问到底是谁干的。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "PRESSURE_SLAM",
+        "BLUFF_EVIDENCE"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "BLUFF_EVIDENCE",
+      "description": "怀疑度突破 85，猫主人立刻打车杀回医院"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：昨晚你刷短视频学宠物美容，手抖把室友最宝贝的赛级布偶猫剃秃了背。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：昨晚你刷短视频学宠物美容，手抖把室友最宝贝的赛级布偶猫剃秃了背。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

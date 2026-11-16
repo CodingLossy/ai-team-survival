@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_06",
+  "gameType": "INTERROGATION",
+  "title": "第6关 · 合租修罗场：消失的车厘子",
+  "description": "洁癖室友发现冰箱里少了一半车厘子，你昨晚半夜嘴馋全炫了。",
+  "maxTurns": 4,
+  "secretTruth": "凌晨两点你起来喝水时吃掉了18颗车厘子，果核全包在卫生纸里扔进了楼下垃圾桶。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 4 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_roomie",
+      "name": "林林",
+      "role": "数据控室友",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "连鸡蛋都用记号笔编了号，擅长盘问作案时间和冰箱开关声。",
+      "initialStats": {
+        "trust": 70,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "CROSS_CHECK",
+        "BLUFF_EVIDENCE",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "OPEN_BAG_CHECK",
+      "description": "怀疑度突破 85，室友要求翻看客厅监控"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：凌晨两点你起来喝水时吃掉了18颗车厘子，果核全包在卫生纸里扔进了楼下垃圾桶。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：凌晨两点你起来喝水时吃掉了18颗车厘子，果核全包在卫生纸里扔进了楼下垃圾桶。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

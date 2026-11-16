@@ -1,0 +1,51 @@
+{
+  "levelId": "interrogation_01",
+  "gameType": "INTERROGATION",
+  "title": "第1关 · 机场海关：消失的限量球鞋",
+  "description": "你帮朋友代购了一双未申报的限量球鞋藏在行李夹层，想办法骗过海关稽查员。",
+  "maxTurns": 4,
+  "secretTruth": "昨晚22:00你在东京涩谷帮朋友代购了一双42码限量版倒钩球鞋（未拆吊牌、鞋盒扔在酒店垃圾桶），塞在黑色硬壳行李箱底部夹层，现在必须假装是自己穿旧的二手鞋。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 6 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_customs_chen",
+      "name": "陈sir",
+      "role": "海关稽查员",
+      "avatarTag": "strict_officer",
+      "personaPrompt": "经验老道、说话简短带压迫感，擅长通过购买时间、鞋码、穿着痕迹和随行物品细节抓逻辑漏洞。",
+      "initialStats": {
+        "patience": 75,
+        "trust": 35
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "BLUFF_EVIDENCE",
+        "OPEN_BAG_CHECK",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "OPEN_BAG_CHECK",
+      "description": "怀疑度超过 85，稽查员强制要求开箱检查"
+    }
+  ],
+  "playerCards": [
+    "✈️ 昨晚22:00东京飞抵上海（2天旅游签）",
+    "🧳 黑色箱子内有1双42码新球鞋",
+    "🎭 你的口供：去出差的程序员，鞋是穿旧的"
+  ],
+  "npcKnownFacts": [
+    "X光机显示鞋底纹路全新毫无磨损",
+    "护照显示是2天旅游签而非商务签",
+    "机场厕所保洁看到有人扔过鞋盒与吊牌"
+  ]
+}

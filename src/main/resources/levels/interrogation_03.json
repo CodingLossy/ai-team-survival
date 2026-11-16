@@ -1,0 +1,67 @@
+{
+  "levelId": "interrogation_03",
+  "gameType": "INTERROGATION",
+  "title": "第3关 · 午夜博物馆：失踪的青铜爵",
+  "description": "闭馆后青铜爵不翼而飞，你其实是想偷偷修复自己白天不小心碰歪的底座，但神探怀疑你是内鬼。",
+  "maxTurns": 6,
+  "secretTruth": "今天17:40闭馆前你打扫展柜时不小心把青铜爵碰出了一道细微划痕，害怕赔偿便在21:00偷偷溜回展厅把它拿进修复室应急补救，并不是要盗窃。",
+  "globalStats": {
+    "suspicion": 30
+  },
+  "winCondition": "turn >= 8 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_detective_qin",
+      "name": "秦探长",
+      "role": "高压刑侦专家",
+      "avatarTag": "hardcore_detective",
+      "personaPrompt": "压迫感极强，擅长抛出'我们在修复室门把手提取到了你的指纹'等半真半假的证据诈唬嫌疑人，观察微表情变化。",
+      "initialStats": {
+        "patience": 55,
+        "trust": 20
+      },
+      "allowedActions": [
+        "BLUFF_EVIDENCE",
+        "PRESSURE_SLAM",
+        "LOCK_ROOM",
+        "ARREST"
+      ]
+    },
+    {
+      "npcId": "npc_curator_zhou",
+      "name": "周馆长",
+      "role": "和事佬副官",
+      "avatarTag": "kind_curator",
+      "personaPrompt": "扮演好人角色安抚你，诱导你在放松警惕时说出实情，一旦你承认碰过展品就会立刻把话递给秦探长。",
+      "initialStats": {
+        "patience": 75,
+        "trust": 45
+      },
+      "allowedActions": [
+        "SOFT_PERSUADE",
+        "INTERRUPT_HINT",
+        "PASS_CLUE_TO_BOSS"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "LOCK_ROOM",
+      "description": "怀疑度突破 85，秦探长下令封锁展厅并准备搜身"
+    }
+  ],
+  "playerCards": [
+    "⏰ 17:40 打扫时不小心碰歪了青铜爵底座",
+    "🔧 21:00 溜回展厅想拿去修复室应急补救",
+    "🎭 你的口供：晚上下班后直接回家了没进过展厅"
+  ],
+  "npcKnownFacts": [
+    "修复室门把手提取到了你的指纹",
+    "展柜锁扣有近期被非正常开启的痕迹",
+    "周馆长记得你下午在青铜器展区神色慌张"
+  ]
+}

@@ -1,0 +1,12 @@
+server:
+  port: ${PORT:7860}
+
+spring:
+  application:
+    name: ai-npc-core
+
+llm:
+  base-url: ${LLM_BASE_URL:https://api.deepseek.com/v1}
+  api-key: ${LLM_API_KEY:}
+  model: ${LLM_MODEL:deepseek-chat}
+  timeout-seconds: 30

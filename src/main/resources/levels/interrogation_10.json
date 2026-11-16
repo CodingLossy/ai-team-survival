@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_10",
+  "gameType": "INTERROGATION",
+  "title": "第10关 · 驾校清晨：后杠上的神秘划痕",
+  "description": "昨天练车倒库不小心蹭了墙角，今天一早面对暴躁的驾校教练。",
+  "maxTurns": 4,
+  "secretTruth": "昨天下午五点你最后一把倒库蹭掉了后保险杠一块漆，用黑色马克笔涂了一下。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 4 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_coach",
+      "name": "王教练",
+      "role": "暴躁老教练",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "一眼就能看出车漆不对劲，但只要你态度诚恳或理由无懈可击也能糊弄过去。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "PRESSURE_SLAM",
+        "BLUFF_EVIDENCE",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "PRESSURE_SLAM",
+      "description": "怀疑度突破 85，教练调取场地录像"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：昨天下午五点你最后一把倒库蹭掉了后保险杠一块漆，用黑色马克笔涂了一下。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：昨天下午五点你最后一把倒库蹭掉了后保险杠一块漆，用黑色马克笔涂了一下。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

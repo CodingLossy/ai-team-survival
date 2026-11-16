@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_04",
+  "gameType": "INTERROGATION",
+  "title": "第4关 · 相亲局：前任的微信弹窗",
+  "description": "相亲对象借你手机点奶茶时正好弹出前任消息，想办法圆过去。",
+  "maxTurns": 4,
+  "secretTruth": "昨晚你确实和前任一起吃了顿散伙饭，微信备注刚改成'快递员老王'。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 4 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_date",
+      "name": "苏小姐",
+      "role": "敏锐相亲对象",
+      "avatarTag": "smiling_hr",
+      "personaPrompt": "外表温柔得体，实则第六感极强，专抓时间线和备注细节。",
+      "initialStats": {
+        "trust": 75,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "CROSS_CHECK",
+        "BLUFF_EVIDENCE",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "BLUFF_EVIDENCE",
+      "description": "怀疑度突破 85，对方要求当场点开聊天记录"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：昨晚你确实和前任一起吃了顿散伙饭，微信备注刚改成'快递员老王'。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：昨晚你确实和前任一起吃了顿散伙饭，微信备注刚改成'快递员老王'。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

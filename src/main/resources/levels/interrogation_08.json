@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_08",
+  "gameType": "INTERROGATION",
+  "title": "第8关 · 深夜临检：只是藿香正气水",
+  "description": "车里有淡淡酒味，你其实只是刚喝了含酒精的藿香正气水，但交警高度怀疑。",
+  "maxTurns": 4,
+  "secretTruth": "二十分钟前你中暑喝了一支藿香正气水，没有喝酒，但瓶子被你随手扔在了副驾脚垫下。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 4 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_traffic",
+      "name": "李警官",
+      "role": "夜查交警",
+      "avatarTag": "strict_officer",
+      "personaPrompt": "语气严肃但讲道理，会核对你的行车路线、同行人和口腔气味。",
+      "initialStats": {
+        "trust": 80,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "BLUFF_EVIDENCE",
+        "OPEN_BAG_CHECK",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "OPEN_BAG_CHECK",
+      "description": "怀疑度突破 85，交警要求下车进行血液复检"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：二十分钟前你中暑喝了一支藿香正气水，没有喝酒，但瓶子被你随手扔在了副驾脚垫下...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：二十分钟前你中暑喝了一支藿香正气水，没有喝酒，但瓶子被你随手扔在了副驾脚垫下。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

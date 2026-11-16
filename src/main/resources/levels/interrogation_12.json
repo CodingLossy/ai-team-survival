@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_12",
+  "gameType": "INTERROGATION",
+  "title": "第12关 · 退货售后：穿去拍照的礼服",
+  "description": "你把礼服穿去海边拍了一天照，吊牌是自己用别针重新挂上去的，面对金牌客服。",
+  "maxTurns": 5,
+  "secretTruth": "裙摆内侧其实沾了一点海沙和防晒霜痕迹，吊牌上的塑胶绳被你用打火机烫过。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 5 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_cs",
+      "name": "小雅",
+      "role": "金牌售后专员",
+      "avatarTag": "smiling_hr",
+      "personaPrompt": "说话客气但极其专业，专查拆封视频、物流签收时间和细节照片。",
+      "initialStats": {
+        "trust": 75,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "CROSS_CHECK",
+        "REJECT_OFFER",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "REJECT_OFFER",
+      "description": "怀疑度突破 85，客服拒绝退货并拉入黑名单"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：裙摆内侧其实沾了一点海沙和防晒霜痕迹，吊牌上的塑胶绳被你用打火机烫过。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：裙摆内侧其实沾了一点海沙和防晒霜痕迹，吊牌上的塑胶绳被你用打火机烫过。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

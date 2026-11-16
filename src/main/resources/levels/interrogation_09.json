@@ -1,0 +1,64 @@
+{
+  "levelId": "interrogation_09",
+  "gameType": "INTERROGATION",
+  "title": "第9关 · 家长会危机：38分的数学卷子",
+  "description": "你把 38 分的卷子折成了千纸鹤塞在书包夹层，面对班主任和爱打小报告的同桌。",
+  "maxTurns": 5,
+  "secretTruth": "卷子就在你书包最底层，你还用红笔把 38 改成了 88 打算蒙混过关。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 5 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_teacher",
+      "name": "刘老师",
+      "role": "火眼金睛班主任",
+      "avatarTag": "strict_officer",
+      "personaPrompt": "擅长通过你的眼神闪躲和同桌的反应戳穿谎言。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "CROSS_CHECK",
+        "OPEN_BAG_CHECK"
+      ]
+    },
+    {
+      "npcId": "npc_desk",
+      "name": "小明",
+      "role": "热心同桌",
+      "avatarTag": "clueless_colleague",
+      "personaPrompt": "嘴上说帮你打掩护，但一紧张就会顺嘴说出你昨天折纸鹤的事。",
+      "initialStats": {
+        "trust": 80,
+        "pressure": 50
+      },
+      "allowedActions": [
+        "INTERRUPT_HINT",
+        "ACCIDENTAL_LEAK"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "OPEN_BAG_CHECK",
+      "description": "怀疑度突破 85，班主任直接要求翻开书包"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：卷子就在你书包最底层，你还用红笔把 38 改成了 88 打算蒙混过关。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：卷子就在你书包最底层，你还用红笔把 38 改成了 88 打算蒙混过关。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}

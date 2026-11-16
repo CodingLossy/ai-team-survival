@@ -1,0 +1,50 @@
+{
+  "levelId": "interrogation_07",
+  "gameType": "INTERROGATION",
+  "title": "第7关 · 古玩街捡漏：真假青花瓷",
+  "description": "你一眼认出摊位上的碗是真品，必须假装不懂行把价格砍下来。",
+  "maxTurns": 5,
+  "secretTruth": "你其实是资深鉴宝主播，知道这个碗至少值三十万，但你想两千块捡漏。",
+  "globalStats": {
+    "suspicion": 20
+  },
+  "winCondition": "turn >= 5 && suspicion < 100",
+  "loseCondition": "suspicion >= 100",
+  "npcs": [
+    {
+      "npcId": "npc_antique",
+      "name": "马老板",
+      "role": "老狐狸掌柜",
+      "avatarTag": "fortune_architect",
+      "personaPrompt": "最会看人下菜碟，一旦发现你太懂行就会立刻坐地起价甚至不卖。",
+      "initialStats": {
+        "trust": 75,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "ASK_DETAIL",
+        "SOFT_PERSUADE",
+        "BLUFF_EVIDENCE",
+        "PASS_THROUGH"
+      ]
+    }
+  ],
+  "ruleHooks": [
+    {
+      "statKey": "suspicion",
+      "operator": ">=",
+      "threshold": 85,
+      "forcedAction": "BLUFF_EVIDENCE",
+      "description": "怀疑度突破 85，老板察觉你在捡漏直接收摊"
+    }
+  ],
+  "playerCards": [
+    "📌 案情核心：你其实是资深鉴宝主播，知道这个碗至少值三十万，但你想两千块捡漏。...",
+    "🎭 你的目标：用合理借口掩盖破绽，别和自己前面说过的话矛盾",
+    "⚡ 反杀提示：若对方编造你底牌里完全没有的细节，可拍桌拆穿假证据"
+  ],
+  "npcKnownFacts": [
+    "已知客观事实：你其实是资深鉴宝主播，知道这个碗至少值三十万，但你想两千块捡漏。",
+    "注意核对嫌疑人前后时间线与物品细节是否自相矛盾"
+  ]
+}
