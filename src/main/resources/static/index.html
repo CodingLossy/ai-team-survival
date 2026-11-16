@@ -3,27 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 测谎审讯室：CRT 监控终端</title>
+  <title>千万别散伙：AI 奇葩团队生存战</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     body {
-      background-color: #020503;
-      background-image: repeating-linear-gradient(
-        0deg,
-        rgba(16, 185, 129, 0.04) 0px,
-        rgba(16, 185, 129, 0.04) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-      color: #d1fae5;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f4f1ea;
+      background-image: radial-gradient(#d6d0c4 1px, transparent 1px);
+      background-size: 16px 16px;
+      color: #0f172a;
+      font-family: system-ui, -apple-system, sans-serif;
     }
-    .danger-vignette { box-shadow: inset 0 0 90px rgba(239, 68, 68, 0.55); }
-    .rec-blink { animation: recBlink 1s infinite; }
-    @keyframes recBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .pixel-box {
+      border: 2px solid #0f172a;
+      box-shadow: 4px 4px 0px #0f172a;
+    }
+    .pixel-btn {
+      border: 2px solid #0f172a;
+      box-shadow: 2px 2px 0px #0f172a;
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+    .pixel-btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #0f172a;
+    }
+    .pulse-danger { animation: pulseDanger 1s infinite; }
+    @keyframes pulseDanger {
+      0%, 100% { background-color: #fee2e2; }
+      50% { background-color: #fecaca; }
+    }
   </style>
 </head>
 <body>
@@ -32,46 +42,74 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    const ACTION_LABELS = {
-      ASK_DETAIL: "[CMD: 细节追问]", BLUFF_EVIDENCE: "[CMD: 抛假证据诈唬]", OPEN_BAG_CHECK: "[CMD: 强制开箱检查]",
-      PASS_THROUGH: "[CMD: 勉强放行]", CROSS_CHECK: "[CMD: 交叉核对]", REJECT_OFFER: "[CMD: 撤回 Offer]",
-      INTERRUPT_HINT: "[CMD: 证人插话]", ACCIDENTAL_LEAK: "[CMD: 猪队友漏嘴]", PRESSURE_SLAM: "[CMD: 拍桌施压]",
-      LOCK_ROOM: "[CMD: 封锁展厅]", ARREST: "[CMD: 当场控制]", SOFT_PERSUADE: "[CMD: 温和套话]", PASS_CLUE_TO_BOSS: "[CMD: 递交破绽]"
+    const AVATAR_EMOJI = {
+      grumpy_coder: "👨‍💻", dreamer_pm: "📊", chill_designer: "🎨", fortune_architect: "🔮",
+      coffee_intern: "🧋", civil_exam_dev: "📚", hype_ops: "📢", strict_qa: "🔍",
+      boss_relative: "🕶️", ai_bro: "🤖", startup_sales: "💼", client_boss: "🧐", default: "🧑"
     };
 
-    function playTableSlam(success) {
+    const ACTION_LABELS = {
+      OVERTIME_WORK: "🔥 通宵赶工", SLACK_OFF: "🐟 带薪摸鱼", GOSSIP_IN_GROUP: "💬 群里传话",
+      RESIGN: "📦 提桶跑路", PITCH_IDEA: "💡 又画新饼", DELIVER_UI: "✨ 交付设计",
+      ASK_LEAVE: "🏥 请假逃避", BLESS_SERVER: "🕯️ 玄学祈福", BREAK_PROD: "💥 误删测试库",
+      BOOST_MORALE: "🎉 鼓舞士气", BLOCK_RELEASE: "⛔ 卡死上线", VERIFY_FIX: "✅ 验收通过",
+      REPORT_TO_BOSS: "📞 打小报告", BRING_BUDGET: "💰 拉来预算", CHANGE_SCOPE: "📝 临时改需求",
+      FINAL_SIGN_OFF: "🏆 终极签字验收"
+    };
+
+    
+    const CARD_DECK = [
+      { id: "CARD_PIE", name: "🥧 画大饼", cost: "¥0", desc: "进度+10% 压力+10 (Combo: 后接发红包)", tag: "常规" },
+      { id: "CARD_RED_PACKET", name: "💸 发红包", cost: "¥1000", desc: "压力-25 信任+15 进度+6%", tag: "常规" },
+      { id: "CARD_ICED_COFFEE", name: "🧋 全员冰美式", cost: "¥400", desc: "压力-15 进度+8%", tag: "续命" },
+      { id: "CARD_FORTUNE", name: "🔮 算一卦再上线", cost: "¥0", desc: "50%进度+24% / 50%全员压力+18", tag: "非常规" },
+      { id: "CARD_UNPLUG_NET", name: "🧹 物理拔网线", cost: "¥500", desc: "强行清空谣言传话 压力-15", tag: "非常规" },
+      { id: "CARD_BOSS_INSPECT", name: "🕵️ 假装老板视察", cost: "¥0", desc: "进度+18% 信任-15 (Combo: 后接冰美式)", tag: "非常规" },
+      { id: "CARD_DROP_DB", name: "🔥 高危热更新", cost: "¥0", desc: "进度+28% 但目标压力暴涨+35", tag: "赌命" }
+    ];
+
+    const CRISIS_POOL = [
+      {
+        title: "🔥 突发危机：测试服务器突然 502 崩溃！",
+        desc: "距离演示只剩半天，日志显示内存溢出，全组人都在群里艾特你。",
+        options: [
+          { label: "💸 紧急升配云主机（经费 -2000，进度 +12%）", deltas: { budget: -2000, progress: 12 } },
+          { label: "🛠️ 咬牙自己回滚版本（不花钱，但进度 -5%）", deltas: { progress: -5 } }
+        ]
+      },
+      {
+        title: "📢 甲方突袭：要求首页加个炫酷 3D 动效！",
+        desc: "客户刚在微信上发了一张竞品截图，说'这个看着大气，加上吧'。",
+        options: [
+          { label: "🤝 顺水推舟加钱接单（经费 +3000，进度 +5%）", deltas: { budget: 3000, progress: 5 } },
+          { label: "🛡️ 硬气拒绝保护团队（经费不变，进度 +10%）", deltas: { progress: 10 } }
+        ]
+      },
+      {
+        title: "☕ 下午茶续命时刻",
+        desc: "连续赶工两天，团队气氛已经降到冰点。",
+        options: [
+          { label: "🧋 全员点波霸奶茶（经费 -800，进度 +10%）", deltas: { budget: -800, progress: 10 } },
+          { label: "📖 群里发鸡汤励志文章（不花钱，进度 +3%）", deltas: { progress: 3 } }
+        ]
+      }
+    ];
+
+    function playBeep(freq = 520, duration = 0.08) {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(success ? 180 : 95, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.18);
-        gain.gain.setValueAtTime(0.25, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        osc.frequency.value = freq;
+        gain.gain.value = 0.05;
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.21);
+        osc.stop(ctx.currentTime + duration);
       } catch (e) {}
     }
 
-    function playHeartTick(suspicion) {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.value = suspicion >= 75 ? 110 : 75;
-        gain.gain.value = 0.06;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.09);
-      } catch (e) {}
-    }
-
-    function PixelInterrogationStage({ suspicion, lastAction, npcs, selectedNpcId, fxTrigger }) {
+    function PixelOfficeStage({ npcs, npcStates, lastActionMap, selectedNpcId, progress, fxTrigger }) {
       const canvasRef = useRef(null);
       useEffect(() => {
         const canvas = canvasRef.current;
@@ -79,19 +117,20 @@
         const ctx = canvas.getContext("2d");
         let frame = 0;
         let raf;
+
+        const COLORS = ["#0284c7", "#9333ea", "#059669", "#d97706", "#db2777"];
         const particles = [];
         if (fxTrigger?.ts) {
-          const isSlam = fxTrigger.type === "SLAM_HIT" || fxTrigger.type === "SLAM_MISS";
-          const col = fxTrigger.type === "SLAM_HIT" ? "#34d399" : (fxTrigger.type === "SLAM_MISS" ? "#ef4444" : "#34d399");
-          for (let i = 0; i < (isSlam ? 32 : 16); i++) {
+          const isCoin = fxTrigger.type === "COIN";
+          for (let i = 0; i < 28; i++) {
             particles.push({
-              x: 240 + (Math.random() - 0.5) * 60,
-              y: 78,
-              vx: (Math.random() - 0.5) * 6,
-              vy: -1.5 - Math.random() * 4,
-              size: 4 + Math.floor(Math.random() * 3),
-              color: col,
-              life: 36
+              x: Math.random() * 460 + 10,
+              y: isCoin ? -Math.random() * 40 : 60 + Math.random() * 20,
+              vx: (Math.random() - 0.5) * 2.5,
+              vy: isCoin ? 1.5 + Math.random() * 2 : -1.5 - Math.random() * 2,
+              size: isCoin ? 6 : 4,
+              color: isCoin ? (i % 2 === 0 ? "#facc15" : "#fb923c") : "#ef4444",
+              life: 65
             });
           }
         }
@@ -104,65 +143,102 @@
         const render = () => {
           frame++;
           ctx.imageSmoothingEnabled = false;
-          const burstActive = fxTrigger?.ts && (Date.now() - fxTrigger.ts < 550);
-          const shake = ((lastAction === "PRESSURE_SLAM" && frame % 12 < 6) || burstActive) ? (frame % 4 < 2 ? 4 : -4) : 0;
+          // Bright daytime Kairosoft office wall & warm wood floor
+          drawRect(0, 0, 480, 86, "#fef3c7");
+          drawRect(0, 86, 480, 34, "#d6d3d1");
+          drawRect(0, 84, 480, 2, "#0f172a");
 
-          drawRect(0, 0, 480, 116, "#020604");
-          drawRect(16, 12, 448, 70, "#05140c");
-          const alarmOn = suspicion >= 80 && (frame % 20 < 10);
-          drawRect(428, 18, 12, 12, alarmOn ? "#ef4444" : "#064e3b");
+          // Daytime window with blue sky & pixel clouds
+          drawRect(18, 10, 76, 44, "#0f172a");
+          drawRect(20, 12, 72, 40, "#38bdf8");
+          drawRect(72, 16, 12, 12, "#fde047"); // sun
+          const cx = 26 + Math.floor((frame * 0.2) % 36);
+          drawRect(cx, 22, 18, 6, "#ffffff");
+          drawRect(cx + 4, 18, 10, 4, "#ffffff");
 
-          const swing = Math.round(Math.sin(frame * 0.05) * 4);
-          drawRect(238 + swing, 0, 4, 16, "#10b981");
-          drawRect(226 + swing, 14, 28, 8, "#065f46");
-          ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
-          ctx.beginPath();
-          ctx.moveTo(228 + swing, 22);
-          ctx.lineTo(252 + swing, 22);
-          ctx.lineTo(320 + swing, 92);
-          ctx.lineTo(160 + swing, 92);
-          ctx.closePath();
-          ctx.fill();
+          // Progress scoreboard on wall
+          drawRect(356, 12, 108, 24, "#0f172a");
+          drawRect(358, 14, 104, 20, "#ffffff");
+          drawRect(360, 16, Math.min(100, Math.round(progress)), 16, progress >= 99 ? "#f59e0b" : "#10b981");
 
-          npcs.slice(0, 2).forEach((npc, idx) => {
-            const nx = (npcs.length === 1 ? 228 : 178 + idx * 100) + shake;
-            const ny = 42 + (Math.floor(frame / 20 + idx) % 2);
+          const count = Math.min(5, npcs.length);
+          const spacing = 420 / Math.max(1, count);
+
+          npcs.slice(0, 5).forEach((npc, idx) => {
+            const st = npcStates?.[npc.npcId];
+            const active = st ? st.active : true;
+            const pressure = st?.stats?.pressure ?? 20;
+            const action = lastActionMap?.[npc.npcId] || "";
+            const baseX = 48 + idx * spacing;
+            const baseY = 62;
+            const bob = active ? (Math.floor(frame / 15 + idx) % 2) * 2 : 0;
+            const shirt = COLORS[idx % COLORS.length];
             const isSel = npc.npcId === selectedNpcId;
-            drawRect(nx, ny, 20, 18, "#d1fae5");
-            drawRect(nx, ny - 4, 20, 6, "#064e3b");
-            drawRect(nx + 4, ny + 7, 3, 3, "#020604");
-            drawRect(nx + 13, ny + 7, 3, 3, "#020604");
-            drawRect(nx - 4, ny + 18, 28, 22, isSel ? "#059669" : "#065f46");
+
+            // Desk & Monitor
+            drawRect(baseX - 18, baseY + 18, 48, 16, "#92400e");
+            drawRect(baseX - 10, baseY + 4, 24, 14, "#1e293b");
+            drawRect(baseX - 8, baseY + 6, 20, 10, active ? (frame % 20 < 10 ? "#7dd3fc" : "#bae6fd") : "#475569");
+
+            if (!active) {
+              drawRect(baseX + 12, baseY + 10, 14, 10, "#d97706");
+              drawRect(baseX + 12, baseY + 10, 14, 2, "#78350f");
+              return;
+            }
+
+            if (isSel) {
+              drawRect(baseX + 2, baseY - 24 + bob, 6, 4, "#ef4444");
+              drawRect(baseX + 4, baseY - 20 + bob, 2, 2, "#ef4444");
+            }
+
+            drawRect(baseX - 2, baseY - 12 + bob, 14, 12, "#fed7aa");
+            drawRect(baseX - 2, baseY - 14 + bob, 14, 4, "#0f172a");
+            drawRect(baseX + 1, baseY - 7 + bob, 2, 2, "#0f172a");
+            drawRect(baseX + 7, baseY - 7 + bob, 2, 2, "#0f172a");
+            drawRect(baseX - 4, baseY + bob, 18, 16, shirt);
+
+            if (action === "OVERTIME_WORK" || action === "DELIVER_UI" || action === "VERIFY_FIX") {
+              const sy = (frame % 12) * 1.5;
+              drawRect(baseX - 12, baseY + 2 - sy, 3, 3, "#f59e0b");
+              drawRect(baseX + 16, baseY + 4 - sy, 3, 3, "#0284c7");
+            } else if (action === "SLACK_OFF" || action === "ASK_LEAVE") {
+              const zy = (frame % 24) * 0.6;
+              ctx.fillStyle = "#475569";
+              ctx.font = "bold 9px monospace";
+              ctx.fillText("Zzz", baseX + 14, baseY - 8 - zy);
+            } else if (action === "GOSSIP_IN_GROUP" || action === "PITCH_IDEA") {
+              drawRect(baseX + 12, baseY - 16, 12, 9, "#ffffff");
+              drawRect(baseX + 16, baseY - 14, 2, 4, "#ef4444");
+            }
+
+            if (pressure >= 80 && frame % 16 < 10) {
+              drawRect(baseX + 14, baseY - 14 + bob, 4, 8, "#ef4444");
+              drawRect(baseX + 14, baseY - 4 + bob, 4, 3, "#ef4444");
+            }
+
+            ctx.fillStyle = isSel ? "#b91c1c" : "#0f172a";
+            ctx.font = "bold 9px monospace";
+            ctx.fillText(npc.name.slice(0, 4), baseX - 6, 114);
           });
-
-          drawRect(40, 82 + shake, 400, 34, "#064e3b");
-          drawRect(40, 82 + shake, 400, 3, "#10b981");
-
-          drawRect(64, 62 + shake, 48, 24, "#022c22");
-          drawRect(68, 66 + shake, 40, 16, "#020604");
-          const needleY = 74 + Math.round(Math.sin(frame * (suspicion >= 75 ? 0.5 : 0.2)) * (suspicion >= 75 ? 6 : 3));
-          drawRect(70 + (frame % 36), needleY + shake, 3, 3, suspicion >= 75 ? "#ef4444" : "#34d399");
 
           for (let i = particles.length - 1; i >= 0; i--) {
             const pt = particles[i];
             pt.x += pt.vx;
             pt.y += pt.vy;
-            pt.vy += 0.18;
             pt.life--;
             drawRect(pt.x, pt.y, pt.size, pt.size, pt.color);
-            if (pt.life <= 0) particles.splice(i, 1);
+            if (pt.life <= 0 || pt.y > 125) particles.splice(i, 1);
           }
 
           raf = requestAnimationFrame(render);
         };
         raf = requestAnimationFrame(render);
         return () => cancelAnimationFrame(raf);
-      }, [suspicion, lastAction, npcs, selectedNpcId, fxTrigger]);
+      }, [npcs, npcStates, lastActionMap, selectedNpcId, progress, fxTrigger]);
 
       return (
-        <div className="p-2 bg-black border-b border-emerald-500/40 relative">
-          <div className="absolute top-3 left-4 text-[10px] text-red-500 font-bold rec-blink">● REC // CAM-04</div>
-          <canvas ref={canvasRef} width={480} height={116} className="w-full h-28 border border-emerald-500/30" style={{ imageRendering: "pixelated" }} />
+        <div className="p-2 bg-amber-50 border-b-2 border-slate-900">
+          <canvas ref={canvasRef} width={480} height={120} className="w-full h-28 border-2 border-slate-900 rounded-lg" style={{ imageRendering: "pixelated" }} />
         </div>
       );
     }
@@ -173,36 +249,23 @@
       const [compiling, setCompiling] = useState(false);
       const [session, setSession] = useState(null);
       const [selectedNpcId, setSelectedNpcId] = useState(null);
-      const [chatLogs, setChatLogs] = useState([]);
+      const [chatLogs, setChatLogs] = useState({});
+      const [eventLogs, setEventLogs] = useState([]);
       const [inputText, setInputText] = useState("");
       const [sending, setSending] = useState(false);
-      const [showSecret, setShowSecret] = useState(true);
       const [toast, setToast] = useState(null);
-      const [timeLeft, setTimeLeft] = useState(18);
-      const [lastAction, setLastAction] = useState("ASK_DETAIL");
+      const [expandedThoughts, setExpandedThoughts] = useState({});
+      const [crisis, setCrisis] = useState(null);
+      const [lastActionMap, setLastActionMap] = useState({});
       const [fxTrigger, setFxTrigger] = useState(null);
-      const [itemsLeft, setItemsLeft] = useState({ water: 2, alibi: 1, blame: 1 });
+      const [hand, setHand] = useState(() => CARD_DECK.slice(0, 4));
+      const [intentMap, setIntentMap] = useState({});
       const [quickReplies, setQuickReplies] = useState([
-        { label: "强硬反问", text: "这只是我的私人物品，你们有什么依据怀疑我？" },
-        { label: "模糊拖延", text: "时间有点久了，具体细节我得稍微回忆一下。" }
+        { label: "画饼安抚", text: "辛苦了，项目上线后请你吃大餐，今晚加把劲！" },
+        { label: "务实推进", text: "先别管那个新需求了，按最稳的方案先上线。" },
+        { label: "夸赞鼓劲", text: "刚听说隔壁组都在夸你效率高，核心模块靠你了！" }
       ]);
-
-      const [sensorMode, setSensorMode] = useState("AUTO");
-      const [mediaReady, setMediaReady] = useState(false);
-      const [calibrating, setCalibrating] = useState(false);
-      const [calibrated, setCalibrated] = useState(false);
-      const [listening, setListening] = useState(false);
-
-      const videoRef = useRef(null);
-      const canvasWaveRef = useRef(null);
-      const audioCtxRef = useRef(null);
-      const analyserRef = useRef(null);
-      const streamRef = useRef(null);
-      const turnStartRef = useRef(Date.now());
-      const volumeSamplesRef = useRef([]);
-      const baselineVolRef = useRef(20);
-      const animFrameRef = useRef(null);
-      const recognitionRef = useRef(null);
+      const chatEndRef = useRef(null);
 
       const showToast = (msg) => {
         setToast(msg);
@@ -213,164 +276,44 @@
         fetch("/api/levels")
           .then(r => r.json())
           .then(data => {
-            const filtered = data.filter(l => l.gameType === "INTERROGATION");
+            const filtered = data.filter(l => l.gameType === "TEAM_SURVIVAL");
             setLevels(filtered.length > 0 ? filtered : data);
           })
-          .catch(e => showToast("SYS_ERR: " + e.message));
-        return () => stopMedia();
+          .catch(e => showToast("无法连接后端服务：" + e.message));
       }, []);
 
       useEffect(() => {
-        if (!session || session.status !== "RUNNING" || sending) return;
-        const timer = setInterval(() => {
-          setTimeLeft(prev => {
-            if (prev <= 1) return 0;
-            if (prev <= 6) playHeartTick(session.globalStats?.suspicion ?? 0);
-            return prev - 1;
-          });
-        }, 1000);
-        return () => clearInterval(timer);
-      }, [session, sending]);
-
-      const stopMedia = () => {
-        if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(t => t.stop());
-          streamRef.current = null;
-        }
-        if (audioCtxRef.current) {
-          audioCtxRef.current.close().catch(() => {});
-          audioCtxRef.current = null;
-        }
-        setMediaReady(false);
-      };
-
-      const initSensors = async () => {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-          streamRef.current = stream;
-          if (videoRef.current) videoRef.current.srcObject = stream;
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          const ctx = new AudioCtx();
-          const source = ctx.createMediaStreamSource(stream);
-          const analyser = ctx.createAnalyser();
-          analyser.fftSize = 256;
-          source.connect(analyser);
-          audioCtxRef.current = ctx;
-          analyserRef.current = analyser;
-          setMediaReady(true);
-          setSensorMode("AUTO");
-          drawWaveform();
-        } catch (err) {
-          setSensorMode("TEXT_ONLY");
-          setMediaReady(false);
-        }
-      };
-
-      const drawWaveform = () => {
-        if (!analyserRef.current || !canvasWaveRef.current) return;
-        const canvas = canvasWaveRef.current;
-        const ctx = canvas.getContext("2d");
-        const bufferLen = analyserRef.current.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLen);
-        const render = () => {
-          animFrameRef.current = requestAnimationFrame(render);
-          analyserRef.current.getByteTimeDomainData(dataArray);
-          let sum = 0;
-          for (let i = 0; i < bufferLen; i++) sum += Math.abs(dataArray[i] - 128);
-          const avgVol = sum / bufferLen;
-          volumeSamplesRef.current.push(avgVol);
-          if (volumeSamplesRef.current.length > 60) volumeSamplesRef.current.shift();
-
-          ctx.fillStyle = "#020604";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.lineWidth = 1.5;
-          ctx.strokeStyle = avgVol > baselineVolRef.current * 1.5 ? "#ef4444" : "#10b981";
-          ctx.beginPath();
-          const sliceWidth = canvas.width / bufferLen;
-          let x = 0;
-          for (let i = 0; i < bufferLen; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * canvas.height) / 2;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-            x += sliceWidth;
-          }
-          ctx.lineTo(canvas.width, canvas.height / 2);
-          ctx.stroke();
-        };
-        render();
-      };
-
-      const runCalibration = () => {
-        setCalibrating(true);
-        volumeSamplesRef.current = [];
-        setTimeout(() => {
-          const samples = volumeSamplesRef.current;
-          if (samples.length > 0) {
-            const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
-            baselineVolRef.current = Math.max(4, avg);
-          }
-          setCalibrating(false);
-          setCalibrated(true);
-          turnStartRef.current = Date.now();
-          setTimeLeft(18);
-        }, 3000);
-      };
-
-      const toggleVoiceInput = () => {
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) return showToast("当前浏览器不支持语音听写");
-        if (listening && recognitionRef.current) {
-          recognitionRef.current.stop();
-          setListening(false);
-          return;
-        }
-        const rec = new SpeechRec();
-        rec.lang = "zh-CN";
-        rec.interimResults = false;
-        rec.onresult = (e) => setInputText(prev => prev + e.results[0][0].transcript);
-        rec.onend = () => setListening(false);
-        rec.onerror = () => setListening(false);
-        recognitionRef.current = rec;
-        setListening(true);
-        rec.start();
-      };
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, [chatLogs, selectedNpcId]);
 
       const startLevel = async (levelId) => {
         try {
           const res = await fetch(`/api/session/start?levelId=${encodeURIComponent(levelId)}`, { method: "POST" });
-          if (!res.ok) throw new Error("BOOT_FAILED");
+          if (!res.ok) throw new Error("启动对局失败");
           const data = await res.json();
           setSession(data);
-          const firstNpc = data.levelConfig.npcs[0];
-          setSelectedNpcId(firstNpc?.npcId || null);
-          setChatLogs([{
-            role: "npc",
-            npcName: firstNpc?.name,
-            text: `坐下吧。关于「${data.levelConfig.title}」，你最好老实交代。`,
-            action: "ASK_DETAIL"
-          }]);
-          setItemsLeft({ water: 2, alibi: 1, blame: 1 });
-          setCalibrated(false);
-          setTimeLeft(18);
-          turnStartRef.current = Date.now();
-          initSensors();
+          setSelectedNpcId(data.levelConfig.npcs[0]?.npcId || null);
+          setChatLogs({});
+          setLastActionMap({});
+          setIntentMap({});
+          setHand([...CARD_DECK].sort(() => Math.random() - 0.5).slice(0, 4));
+          setCrisis(null);
+          setEventLogs([`📅 第 1 天打卡上班！目标：在 ${data.levelConfig.maxTurns} 天内把项目进度推到 100%。`]);
         } catch (e) {
           showToast(e.message);
         }
       };
 
       const handleCompileCustom = async () => {
-        if (!customIdea.trim()) return showToast("INPUT_REQUIRED");
+        if (!customIdea.trim()) return showToast("请先输入一句项目脑洞！");
         setCompiling(true);
         try {
           const res = await fetch("/api/levels/compile", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ gameType: "INTERROGATION", idea: customIdea.trim() })
+            body: JSON.stringify({ gameType: "TEAM_SURVIVAL", idea: customIdea.trim() })
           });
-          if (!res.ok) throw new Error("COMPILE_FAILED");
+          if (!res.ok) throw new Error("生成失败，请检查 LLM_API_KEY");
           const compiled = await res.json();
           setLevels(prev => [compiled, ...prev]);
           setCustomIdea("");
@@ -382,80 +325,137 @@
         }
       };
 
-      const useTacticItem = async (key, actionType) => {
-        if (!session || itemsLeft[key] <= 0 || session.status !== "RUNNING") return;
-        setItemsLeft(prev => ({ ...prev, [key]: prev[key] - 1 }));
-        if (key === "water") setTimeLeft(18);
+      const triggerManagerAction = async (actionType, customDeltas = null) => {
+        if (!session || session.status !== "RUNNING") return;
+        playBeep(660, 0.08);
         try {
           const res = await fetch("/api/session/action", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId: session.sessionId, actionType })
+            body: JSON.stringify({ sessionId: session.sessionId, actionType, targetNpcId: selectedNpcId, customDeltas })
           });
           const data = await res.json();
           if (data.session) setSession(data.session);
-          if (data.log) setChatLogs(prev => [...prev, { role: "system", text: data.log }]);
+          if (data.log) setEventLogs(prev => [data.log, ...prev]);
+          if (actionType === "RED_PACKET" || actionType === "TEAM_DINNER") {
+            setFxTrigger({ type: "COIN", ts: Date.now() });
+            playBeep(880, 0.08);
+            setTimeout(() => playBeep(1174, 0.12), 70);
+          }
+          setCrisis(null);
         } catch (e) {
-          showToast("ACTION_FAILED");
+          showToast("操作失败：" + e.message);
         }
       };
 
-      const callOutBluff = () => {
-        if (!session || session.status !== "RUNNING") return;
-        fetch("/api/session/action", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId: session.sessionId, actionType: "CALL_OUT_BLUFF" })
-        }).then(r => r.json()).then(d => {
-          if (d.session) setSession(d.session);
-          if (d.log) {
-            setChatLogs(prev => [...prev, { role: "system", text: d.log }]);
-            const hit = d.log.includes("成功");
-            setFxTrigger({ type: hit ? "SLAM_HIT" : "SLAM_MISS", ts: Date.now() });
-            playTableSlam(hit);
+      
+      const playCard = async (card) => {
+        if (!session || !selectedNpcId || sending || session.status !== "RUNNING") return;
+        const targetNpc = session.levelConfig.npcs.find(n => n.npcId === selectedNpcId);
+        setSending(true);
+        try {
+          const res = await fetch("/api/session/play-card", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId: session.sessionId, cardId: card.id, targetNpcId: selectedNpcId, note: inputText.trim() })
+          });
+          const data = await res.json();
+          if (data.session) setSession(data.session);
+          if (data.cardLog) setEventLogs(prev => [data.cardLog, ...prev]);
+          if (data.comboMsg) {
+            setEventLogs(prev => [data.comboMsg, ...prev]);
+            setFxTrigger({ type: "COIN", ts: Date.now() });
+            playBeep(987, 0.12);
           }
-        });
+          if (data.decision) {
+            setChatLogs(prev => ({
+              ...prev,
+              [selectedNpcId]: [
+                ...(prev[selectedNpcId] || []),
+                { role: "player", text: `🃏 出牌【${card.name}】${inputText.trim() ? "：" + inputText.trim() : ""}` },
+                {
+                  role: "npc",
+                  npcName: targetNpc?.name,
+                  text: data.decision.dialogue,
+                  thought: data.decision.thought,
+                  action: data.validation?.executedAction || data.decision.intentAction,
+                  overridden: data.validation?.actionOverridden,
+                  overrideReason: data.validation?.overrideReason
+                }
+              ]
+            }));
+            setLastActionMap(prev => ({ ...prev, [selectedNpcId]: data.validation?.executedAction || data.decision.intentAction }));
+            if (data.decision.nextTurnIntent) {
+              setIntentMap(prev => ({ ...prev, [selectedNpcId]: data.decision.nextTurnIntent }));
+            }
+          }
+          setInputText("");
+          setHand([...CARD_DECK].sort(() => Math.random() - 0.5).slice(0, 4));
+          if (data.session?.status === "RUNNING" && data.session.currentTurn % 2 === 1) {
+            setCrisis(CRISIS_POOL[Math.floor(Math.random() * CRISIS_POOL.length)]);
+          }
+        } catch (e) {
+          showToast("出牌失败：" + e.message);
+        } finally {
+          setSending(false);
+        }
       };
 
-      const sendReply = async (textOverride) => {
+      const sendMessage = async (textOverride) => {
         const msg = (textOverride ?? inputText).trim();
         if (!msg || !session || !selectedNpcId || sending || session.status !== "RUNNING") return;
 
-        const pauseSec = Number(((Date.now() - turnStartRef.current) / 1000).toFixed(1));
-        const samples = volumeSamplesRef.current;
-        const avgVol = samples.length ? samples.reduce((a, b) => a + b, 0) / samples.length : baselineVolRef.current;
-        const tremor = sensorMode === "AUTO" && mediaReady && (avgVol < baselineVolRef.current * 0.5 || avgVol > baselineVolRef.current * 2.5);
-        const blink = sensorMode === "AUTO" && mediaReady && timeLeft === 0;
-
-        const currentSensors = { blinkSpike: blink, pauseSeconds: pauseSec, voiceTremor: tremor };
         const targetNpc = session.levelConfig.npcs.find(n => n.npcId === selectedNpcId);
         setSending(true);
         if (!textOverride) setInputText("");
-        setChatLogs(prev => [...prev, { role: "player", text: msg }]);
+
+        setChatLogs(prev => ({
+          ...prev,
+          [selectedNpcId]: [...(prev[selectedNpcId] || []), { role: "player", text: msg }]
+        }));
 
         try {
           const res = await fetch("/api/session/interact", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId: session.sessionId, targetNpcId: selectedNpcId, message: msg, sensors: currentSensors })
+            body: JSON.stringify({ sessionId: session.sessionId, targetNpcId: selectedNpcId, message: msg, sensors: null })
           });
-          if (!res.ok) throw new Error("API_ERR");
+          if (!res.ok) throw new Error("大模型调用失败，请检查后端 API Key");
           const data = await res.json();
           if (data.session) setSession(data.session);
 
-          if (data.decision) {
-            setLastAction(data.validation?.executedAction || data.decision.intentAction);
-            setChatLogs(prev => [...prev, {
-              role: "npc",
-              npcName: targetNpc?.name,
-              text: data.decision.dialogue,
-              action: data.validation?.executedAction || data.decision.intentAction,
-              hooks: data.validation?.triggeredHooks || []
-            }]);
-            if (data.decision.suggestedReplies?.length) setQuickReplies(data.decision.suggestedReplies);
+          const { decision, validation } = data;
+          if (decision) {
+            playBeep(480, 0.06);
+            setChatLogs(prev => ({
+              ...prev,
+              [selectedNpcId]: [
+                ...(prev[selectedNpcId] || []),
+                {
+                  role: "npc",
+                  npcName: targetNpc?.name,
+                  text: decision.dialogue,
+                  thought: decision.thought,
+                  action: validation?.executedAction || decision.intentAction,
+                  overridden: validation?.actionOverridden,
+                  overrideReason: validation?.overrideReason
+                }
+              ]
+            }));
+
+            const logsToAdd = [];
+            const actionLabel = ACTION_LABELS[validation?.executedAction] || validation?.executedAction;
+            logsToAdd.push(`第 ${session.currentTurn} 天 · ${targetNpc?.name} 执行【${actionLabel}】`);
+            if (validation?.actionOverridden && validation?.overrideReason) logsToAdd.push(`⚠️ 规则拦截：${validation.overrideReason}`);
+            if (decision.rumorToShare?.content) logsToAdd.push(`🤫 暗流涌动：${targetNpc?.name} 私下给队友传了话`);
+            setEventLogs(prev => [...logsToAdd, ...prev]);
+
+            setLastActionMap(prev => ({ ...prev, [selectedNpcId]: validation?.executedAction || decision.intentAction }));
+            if (decision.suggestedReplies?.length) setQuickReplies(decision.suggestedReplies);
+            if (data.session?.status === "RUNNING" && data.session.currentTurn % 2 === 1) {
+              setCrisis(CRISIS_POOL[Math.floor(Math.random() * CRISIS_POOL.length)]);
+            }
           }
-          setTimeLeft(18);
-          turnStartRef.current = Date.now();
         } catch (e) {
           showToast(e.message);
         } finally {
@@ -466,50 +466,60 @@
       if (!session) {
         return (
           <div className="max-w-5xl mx-auto px-4 py-10">
-            {toast && <div className="fixed top-4 right-4 z-50 px-4 py-2 border border-red-500 bg-black text-red-400 text-xs">{toast}</div>}
-            <div className="border border-emerald-500/40 bg-emerald-950/20 p-6 mb-8">
-              <div className="text-xs text-emerald-400 mb-2">POLYGRAPH_OS v3.2 // CLASSIFIED TERMINAL</div>
-              <h1 className="text-3xl font-bold text-emerald-300 tracking-wider mb-2">🚨 AI 测谎审讯室：千万别眨眼</h1>
-              <p className="text-xs text-emerald-400/70">双盲情报对照 · 微表情与声纹监控 · 拍桌拆穿假证据反杀</p>
+            {toast && <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg bg-red-600 text-white text-sm pixel-box">{toast}</div>}
+            <div className="text-center mb-8">
+              <span className="inline-block px-3 py-1 rounded-full bg-amber-300 text-slate-900 border-2 border-slate-900 text-xs font-bold mb-3">
+                ☀️ 开罗像素职场 · AI NPC 生存模拟
+              </span>
+              <h1 className="text-4xl font-black text-slate-900 mb-2">💼 千万别散伙：AI 奇葩团队生存战</h1>
+              <p className="text-slate-600 font-medium">发红包、搞团建、应对突发危机，稳住这帮奇葩同事按时交付！</p>
             </div>
 
-            <div className="border border-emerald-500/30 bg-black/70 p-5 mb-8">
-              <div className="text-xs text-emerald-400 mb-2">[+] CUSTOM_CASE_COMPILER // AI 一句话生成机密案卷</div>
+            <div className="bg-amber-100 rounded-xl p-6 mb-8 pixel-box">
+              <h2 className="text-lg font-extrabold text-slate-900 mb-1">✨ AI 一句话自编奇葩项目</h2>
+              <p className="text-xs text-slate-600 mb-3">输入任意脑洞项目，自动生成团队阵容与规则：</p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="text"
                   value={customIdea}
                   onChange={e => setCustomIdea(e.target.value)}
-                  placeholder="输入脑洞案情，例如：我偷偷穿脏了老板的限量球鞋，现在要骗过洁癖老板"
-                  className="flex-1 bg-black border border-emerald-500/40 px-4 py-2.5 text-xs text-emerald-200 focus:outline-none focus:border-emerald-400"
+                  placeholder="例如：3天内做出一个给猫咪相亲的社交 App，预算只有 5000 块"
+                  className="flex-1 bg-white border-2 border-slate-900 rounded-lg px-4 py-2.5 text-sm text-slate-900 focus:outline-none"
                 />
                 <button
                   onClick={handleCompileCustom}
                   disabled={compiling}
-                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-black font-bold text-xs disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-bold text-sm pixel-btn disabled:opacity-50"
                 >
-                  {compiling ? "COMPILING..." : "COMPILE & ENTER >"}
+                  {compiling ? "AI 编剧中..." : "生成剧本并开局"}
                 </button>
               </div>
             </div>
 
-            <div className="text-xs text-emerald-400 mb-3">[=] CASE_ARCHIVE // 选择审讯案卷（共 {levels.length} 宗）</div>
+            <h2 className="text-lg font-extrabold text-slate-900 mb-4">🎯 选择工作剧本（共 {levels.length} 关）</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {levels.map(lvl => (
-                <div key={lvl.levelId} className="border border-emerald-500/30 hover:border-emerald-400 bg-black/80 p-4 flex flex-col justify-between">
+                <div key={lvl.levelId} className={`rounded-xl p-5 flex flex-col justify-between pixel-box ${lvl.hellMode ? "bg-rose-100" : "bg-white"}`}>
                   <div>
-                    <div className="flex justify-between text-[11px] text-emerald-500 mb-2">
-                      <span>TURNS: {lvl.maxTurns}</span>
-                      <span>NPC: {lvl.npcs?.length || 1}</span>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs px-2 py-0.5 rounded bg-slate-900 text-amber-300 font-bold">{lvl.maxTurns} 天期限</span>
+                      <span className="text-xs font-bold text-slate-600">{lvl.npcs?.length} 人小组</span>
                     </div>
-                    <h3 className="text-sm font-bold text-emerald-200 mb-2">{lvl.title}</h3>
-                    <p className="text-xs text-emerald-400/70 mb-4 leading-relaxed">{lvl.description}</p>
+                    <h3 className="text-base font-black text-slate-900 mb-2">{lvl.title}</h3>
+                    <p className="text-xs text-slate-600 mb-3 leading-relaxed">{lvl.description}</p>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {lvl.npcs?.map(n => (
+                        <span key={n.npcId} className="text-xs px-2 py-0.5 rounded bg-amber-50 text-slate-800 border border-slate-900 font-medium">
+                          {AVATAR_EMOJI[n.avatarTag] || "🧑"} {n.name}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <button
                     onClick={() => startLevel(lvl.levelId)}
-                    className="w-full py-2 border border-emerald-500 text-emerald-300 hover:bg-emerald-500 hover:text-black text-xs font-bold transition"
+                    className="w-full py-2 rounded-lg bg-amber-300 hover:bg-amber-200 text-slate-900 font-bold text-sm pixel-btn"
                   >
-                    LOAD_INTERROGATION &gt;
+                    打卡接手项目
                   </button>
                 </div>
               ))}
@@ -519,145 +529,186 @@
       }
 
       const cfg = session.levelConfig;
-      const suspicion = session.globalStats?.suspicion ?? 0;
+      const progress = session.globalStats?.progress ?? 0;
+      const budget = session.globalStats?.budget ?? 0;
+      const activeNpc = cfg.npcs.find(n => n.npcId === selectedNpcId);
+      const activeNpcState = session.npcStates?.[selectedNpcId];
+      const messages = chatLogs[selectedNpcId] || [];
 
       return (
-        <div className={`h-screen flex flex-col max-w-7xl mx-auto p-3 gap-3 ${suspicion >= 80 ? "danger-vignette" : ""}`}>
-          {toast && <div className="fixed top-4 right-4 z-50 px-4 py-2 border border-amber-500 bg-black text-amber-300 text-xs">{toast}</div>}
+        <div className="h-screen flex flex-col max-w-7xl mx-auto p-3 gap-3">
+          {toast && <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg bg-red-600 text-white text-sm pixel-box">{toast}</div>}
 
-          <header className="border border-emerald-500/40 bg-black/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
+          <header className="bg-amber-200 rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-4 pixel-box">
             <div className="flex items-center gap-3">
-              <button onClick={() => { stopMedia(); setSession(null); }} className="text-xs px-3 py-1 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-black">
-                [ESC] 退出
+              <button onClick={() => setSession(null)} className="text-xs px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold pixel-btn">
+                ← 返回大厅
               </button>
               <div>
-                <div className="text-sm font-bold text-emerald-300">{cfg.title}</div>
-                <div className="text-xs text-emerald-500">ROUND {session.currentTurn}/{cfg.maxTurns} · TIMER: <span className={timeLeft <= 5 ? "text-red-500 font-bold" : "text-amber-400"}>{timeLeft}s</span></div>
+                <h1 className="font-black text-slate-900 text-base">{cfg.title}</h1>
+                <p className="text-xs font-bold text-slate-700">📅 打卡第 {session.currentTurn} / {cfg.maxTurns} 天</p>
               </div>
             </div>
 
-            <div className="flex-1 max-w-sm">
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-emerald-400">POLYGRAPH_SUSPICION</span>
-                <span className={`font-bold ${suspicion >= 80 ? "text-red-500" : "text-emerald-300"}`}>{suspicion}%</span>
+            <div className="flex items-center gap-2.5">
+              <button onClick={() => triggerManagerAction("RED_PACKET")} className="text-xs px-3 py-2 rounded-lg bg-rose-400 hover:bg-rose-300 text-white font-bold pixel-btn">
+                💸 发红包(-¥1000)
+              </button>
+              <button onClick={() => triggerManagerAction("TEAM_DINNER")} className="text-xs px-3 py-2 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-bold pixel-btn">
+                🍕 团建消谣(-¥2500)
+              </button>
+            </div>
+
+            <div className="flex items-center gap-5 flex-1 max-w-sm">
+              <div className="flex-1">
+                <div className="flex justify-between text-xs font-bold mb-1">
+                  <span>项目进度</span>
+                  <span className="text-emerald-800">{progress}%</span>
+                </div>
+                <div className="h-3.5 bg-white border-2 border-slate-900 rounded-full overflow-hidden">
+                  <div className={`h-full transition-all duration-300 ${progress >= 99 ? "bg-amber-500" : "bg-emerald-500"}`} style={{ width: `${Math.min(100, progress)}%` }} />
+                </div>
               </div>
-              <div className="h-2.5 bg-black border border-emerald-500/50">
-                <div className={`h-full transition-all duration-300 ${suspicion >= 80 ? "bg-red-500" : "bg-emerald-400"}`} style={{ width: `${Math.min(100, suspicion)}%` }} />
+              <div className="text-right bg-white px-3 py-1 rounded-lg border-2 border-slate-900">
+                <div className="text-[10px] font-bold text-slate-500">部门经费</div>
+                <div className="text-sm font-black text-amber-700">¥{budget.toLocaleString()}</div>
               </div>
             </div>
           </header>
 
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 min-h-0">
-            {/* Left: Classified Dossier + Polygraph Feed */}
-            <aside className="lg:col-span-5 flex flex-col gap-3 min-h-0 overflow-y-auto">
-              <div className="bg-[#1c1917] border border-amber-600/60 p-3.5">
-                <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-xs font-bold text-amber-400">[TOP SECRET // 你的秘密底牌与口供]</span>
-                  <button onClick={() => setShowSecret(!showSecret)} className="text-xs text-amber-500 underline">{showSecret ? "FOLD" : "OPEN"}</button>
-                </div>
-                {showSecret && (
-                  <div className="space-y-1.5">
-                    <p className="text-xs text-amber-100/90 leading-relaxed">{cfg.secretTruth}</p>
-                    {cfg.playerCards?.length > 0 && (
-                      <div className="space-y-1 pt-1.5 border-t border-amber-600/30">
-                        {cfg.playerCards.map((c, ci) => (
-                          <div key={ci} className="text-xs bg-black/60 text-amber-200 px-2 py-1 border-l-2 border-amber-500">{c}</div>
-                        ))}
+            {/* Left: Employee Badge Wall */}
+            <aside className="lg:col-span-3 bg-white rounded-xl p-3 overflow-y-auto space-y-2.5 pixel-box">
+              <div className="text-xs font-black text-slate-700 uppercase px-1">🪪 员工工牌墙（点击私聊）</div>
+              {cfg.npcs.map(npc => {
+                const st = session.npcStates?.[npc.npcId];
+                const trust = st?.stats?.trust ?? 50;
+                const pressure = st?.stats?.pressure ?? 0;
+                const isSelected = npc.npcId === selectedNpcId;
+                const isDead = st && !st.active;
+
+                return (
+                  <div
+                    key={npc.npcId}
+                    onClick={() => setSelectedNpcId(npc.npcId)}
+                    className={`p-3 rounded-lg border-2 border-slate-900 cursor-pointer transition ${
+                      isDead ? "opacity-50 bg-slate-200" :
+                      isSelected ? "bg-amber-100 shadow-[3px_3px_0px_#0f172a]" : "bg-slate-50 hover:bg-amber-50"
+                    } ${!isDead && pressure >= 80 ? "pulse-danger" : ""}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">{AVATAR_EMOJI[npc.avatarTag] || "🧑"}</span>
+                        <div>
+                          <div className="text-sm font-black text-slate-900">{npc.name}</div>
+                          <div className="text-xs font-medium text-slate-600">{npc.role}</div>{intentMap[npc.npcId] && <div className="text-[10px] text-rose-700 font-bold mt-0.5">意图: {intentMap[npc.npcId]}</div>}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="border border-emerald-500/30 bg-black/80 p-3 space-y-2">
-                <button onClick={callOutBluff} className="w-full py-2 bg-red-950/60 hover:bg-red-900/70 border border-red-500 text-red-300 text-xs font-bold">
-                  [!] 拍桌拆穿：你在用假证据诈我！（猜对 -30% / 猜错 +20%）
-                </button>
-                <div className="grid grid-cols-3 gap-2">
-                  <button disabled={itemsLeft.water <= 0} onClick={() => useTacticItem("water", "DRINK_WATER")} className="py-1.5 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950 text-xs disabled:opacity-30">
-                    🥤 喝水({itemsLeft.water})
-                  </button>
-                  <button disabled={itemsLeft.alibi <= 0} onClick={() => useTacticItem("alibi", "ALIBI_CARD")} className="py-1.5 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950 text-xs disabled:opacity-30">
-                    📄 伪证({itemsLeft.alibi})
-                  </button>
-                  <button disabled={itemsLeft.blame <= 0} onClick={() => useTacticItem("blame", "BLAME_WITNESS")} className="py-1.5 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950 text-xs disabled:opacity-30">
-                    🎭 甩锅({itemsLeft.blame})
-                  </button>
-                </div>
-              </div>
-
-              <div className="border border-emerald-500/30 bg-black/80 p-3 flex-1 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-emerald-400">{sensorMode === "AUTO" && mediaReady ? "SENSOR: ONLINE" : "MODE: TEXT_ONLY"}</span>
-                  <button onClick={() => sensorMode === "AUTO" ? (stopMedia(), setSensorMode("TEXT_ONLY")) : initSensors()} className="px-2 py-0.5 border border-emerald-500/40 text-emerald-400">
-                    {sensorMode === "AUTO" ? "切纯文字" : "开传感器"}
-                  </button>
-                </div>
-                <div className="relative bg-black border border-emerald-500/30 h-32 flex items-center justify-center overflow-hidden">
-                  <video ref={videoRef} autoPlay playsInline muted className={`w-full h-full object-cover opacity-80 ${mediaReady ? "" : "hidden"}`} />
-                  {!mediaReady && <div className="text-xs text-emerald-600 text-center px-4">NO_CAMERA // 降级为纯文本停顿监测</div>}
-                  {mediaReady && !calibrated && (
-                    <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-3 text-center">
-                      <p className="text-xs text-emerald-300 mb-2">CALIBRATE: 朗读“我已准备好接受询问”</p>
-                      <button onClick={runCalibration} disabled={calibrating} className="px-3 py-1 bg-emerald-600 text-black text-xs font-bold">
-                        {calibrating ? "CALIBRATING..." : "START 3s BASELINE"}
-                      </button>
+                      {isDead && <span className="text-xs px-2 py-0.5 bg-red-600 text-white font-bold rounded">已离职</span>}
                     </div>
-                  )}
-                </div>
-                <canvas ref={canvasWaveRef} width={400} height={48} className="w-full h-12 border border-emerald-500/30 bg-black" />
-              </div>
+                    <div className="space-y-1.5 text-xs font-bold">
+                      <div>
+                        <div className="flex justify-between text-slate-600 mb-0.5"><span>信任度</span><span>{trust}</span></div>
+                        <div className="h-2 bg-white border border-slate-900 rounded-full overflow-hidden"><div className="h-full bg-sky-500" style={{ width: `${trust}%` }} /></div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-slate-600 mb-0.5"><span>压力值</span><span className={pressure >= 80 ? "text-red-600" : ""}>{pressure}</span></div>
+                        <div className="h-2 bg-white border border-slate-900 rounded-full overflow-hidden"><div className={`h-full ${pressure >= 80 ? "bg-red-500" : "bg-amber-400"}`} style={{ width: `${pressure}%` }} /></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </aside>
 
-            {/* Right: Pixel Stage + Official Transcript Log */}
-            <main className="lg:col-span-7 border border-emerald-500/40 bg-black/90 flex flex-col min-h-0">
-              <div className="px-3 py-2 border-b border-emerald-500/30 flex flex-wrap gap-2">
-                {cfg.npcs.map(npc => {
-                  const st = session.npcStates?.[npc.npcId];
-                  const active = npc.npcId === selectedNpcId;
-                  return (
-                    <button
-                      key={npc.npcId}
-                      onClick={() => setSelectedNpcId(npc.npcId)}
-                      className={`px-3 py-1 text-xs border ${active ? "bg-emerald-500 text-black font-bold border-emerald-400" : "border-emerald-500/40 text-emerald-400"}`}
-                    >
-                      {npc.name} ({npc.role}) · PATIENCE:{st?.stats?.patience ?? 70}
-                    </button>
-                  );
-                })}
+            {/* Center: Daytime Pixel Office + WeChat Style Group Chat */}
+            <main className="lg:col-span-6 bg-[#ededed] rounded-xl flex flex-col min-h-0 pixel-box overflow-hidden">
+              <div className="px-4 py-2.5 bg-white border-b-2 border-slate-900 flex items-center gap-2">
+                <span className="text-lg">{AVATAR_EMOJI[activeNpc?.avatarTag] || "🧑"}</span>
+                <div>
+                  <div className="text-sm font-black text-slate-900">💬 私聊：{activeNpc?.name}（{activeNpc?.role}）</div>
+                  <div className="text-xs text-slate-500 truncate max-w-md">{activeNpc?.personaPrompt}</div>
+                </div>
               </div>
 
-              <PixelInterrogationStage suspicion={suspicion} lastAction={lastAction} npcs={cfg.npcs} selectedNpcId={selectedNpcId} fxTrigger={fxTrigger} />
+              {cfg.hellMode && progress === 99 && (
+                <div className="px-4 py-2 bg-rose-500 text-white text-xs font-bold border-b-2 border-slate-900">
+                  ⚠️ 进度卡在 99% 验收地狱！快去说服【铁面王】或【甲方李总】完成终极验收问答才能突破 100%！
+                </div>
+              )}
 
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs">
-                {chatLogs.map((m, idx) => (
-                  <div key={idx} className={`p-2.5 border-l-2 ${
-                    m.role === "player" ? "border-sky-400 bg-sky-950/20 text-sky-200" :
-                    m.role === "system" ? "border-amber-400 bg-amber-950/20 text-amber-300" :
-                    "border-emerald-500 bg-emerald-950/20 text-emerald-100"
-                  }`}>
-                    <div className="font-bold mb-1">
-                      {m.role === "player" ? "[SUSPECT_YOU] >>" : m.role === "system" ? "[SYS_LOG] >>" : `[${m.npcName}] >>`}
+              <PixelOfficeStage npcs={cfg.npcs} npcStates={session.npcStates} lastActionMap={lastActionMap} selectedNpcId={selectedNpcId} progress={progress} fxTrigger={fxTrigger} />
+
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.length === 0 && (
+                  <div className="text-center text-slate-500 text-sm mt-8 font-medium">
+                    选好话术、发红包或直接发微信，看看 {activeNpc?.name} 今天准备干活还是摸鱼。
+                  </div>
+                )}
+                {messages.map((m, idx) => (
+                  <div key={idx} className={`flex flex-col ${m.role === "player" ? "items-end" : "items-start"}`}>
+                    <div className={`max-w-[85%] rounded-xl px-4 py-2.5 text-sm border-2 border-slate-900 ${
+                      m.role === "player" ? "bg-[#95ec69] text-slate-900 font-medium" : "bg-white text-slate-900"
+                    }`}>
+                      {m.text}
                     </div>
-                    <div className="leading-relaxed text-sm">{m.text}</div>
                     {m.role === "npc" && (
-                      <div className="mt-1.5 flex flex-wrap gap-2">
-                        {m.action && <span className="px-1.5 py-0.5 bg-emerald-950 border border-emerald-500/40 text-amber-300">{ACTION_LABELS[m.action] || m.action}</span>}
-                        {m.hooks?.map((h, hi) => <span key={hi} className="px-1.5 py-0.5 bg-red-950 border border-red-500 text-red-300">ALERT: {h}</span>)}
+                      <div className="mt-1.5 space-y-1 max-w-[85%]">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs px-2 py-0.5 rounded bg-slate-900 text-amber-300 font-bold">
+                            {ACTION_LABELS[m.action] || m.action}
+                          </span>
+                          {m.thought && (
+                            <button onClick={() => setExpandedThoughts(p => ({ ...p, [idx]: !p[idx] }))} className="text-xs text-slate-600 hover:text-slate-900 underline font-medium">
+                              {expandedThoughts[idx] ? "收起内心OS" : "偷看内心OS"}
+                            </button>
+                          )}
+                        </div>
+                        {expandedThoughts[idx] && (
+                          <div className="text-xs text-slate-700 bg-amber-50 border border-slate-900 rounded-lg px-2.5 py-1.5 italic">
+                            💭 {m.thought}
+                          </div>
+                        )}
+                        {m.overridden && (
+                          <div className="text-xs bg-rose-100 border-2 border-rose-600 text-rose-800 font-bold rounded-lg px-2.5 py-1.5">
+                            ⚖️ 规则引擎拦截：{m.overrideReason}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
                 ))}
+                <div ref={chatEndRef} />
               </div>
 
-              <div className="p-3 border-t border-emerald-500/30 space-y-2">
+              <div className="p-3 bg-white border-t-2 border-slate-900 space-y-2">
+                <div className="text-[11px] font-black text-slate-700">🃏 本回合手牌（点击出牌给 {activeNpc?.name}，支持连招 Combo！）</div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {hand.map(c => (
+                    <button
+                      key={c.id}
+                      disabled={sending || !activeNpcState?.active}
+                      onClick={() => playCard(c)}
+                      className="text-left p-2 rounded-lg bg-amber-50 hover:bg-amber-200 border-2 border-slate-900 pixel-btn disabled:opacity-40"
+                    >
+                      <div className="flex justify-between items-center text-xs font-black text-slate-900">
+                        <span>{c.name}</span>
+                        <span className="text-[10px] px-1 bg-slate-900 text-amber-300 rounded">{c.cost}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-600 mt-1 leading-tight">{c.desc}</div>
+                    </button>
+                  ))}
+                </div>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={toggleVoiceInput} className={`text-xs px-2.5 py-1 border ${listening ? "bg-red-600 text-white border-red-400" : "border-emerald-500/40 text-emerald-400"}`}>
-                    {listening ? "🎙️ REC..." : "🎙️ VOICE"}
-                  </button>
-                  {quickReplies.map((qr, qi) => (
-                    <button key={qi} disabled={sending} title={qr.text} onClick={() => sendReply(qr.text)} className="text-xs px-2.5 py-1 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-950 disabled:opacity-40">
-                      [{qr.label}] {qr.text.slice(0, 14)}{qr.text.length > 14 ? "..." : ""}
+                  {quickReplies.map((qr, i) => (
+                    <button
+                      key={i}
+                      title={qr.text}
+                      disabled={sending || !activeNpcState?.active}
+                      onClick={() => sendMessage(qr.text)}
+                      className="text-xs px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-slate-900 font-bold border border-slate-900 disabled:opacity-40"
+                    >
+                      {qr.label}：{qr.text.slice(0, 12)}{qr.text.length > 12 ? "..." : ""}
                     </button>
                   ))}
                 </div>
@@ -665,29 +716,71 @@
                   <input
                     type="text"
                     value={inputText}
-                    disabled={sending}
+                    disabled={sending || !activeNpcState?.active}
                     onChange={e => setInputText(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && sendReply()}
-                    placeholder="> 输入你的辩解..."
-                    className="flex-1 bg-black border border-emerald-500/50 px-3 py-2 text-sm text-emerald-200 focus:outline-none focus:border-emerald-400"
+                    onKeyDown={e => e.key === "Enter" && sendMessage()}
+                    placeholder={activeNpcState?.active ? `给 ${activeNpc?.name} 发消息...` : "该同事已离职，请切换其他队友"}
+                    className="flex-1 bg-slate-50 border-2 border-slate-900 rounded-lg px-4 py-2 text-sm text-slate-900 focus:outline-none disabled:opacity-50"
                   />
-                  <button disabled={sending} onClick={() => sendReply()} className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs disabled:opacity-50">
-                    {sending ? "PROCESSING..." : "SUBMIT >"}
+                  <button
+                    disabled={sending || !activeNpcState?.active}
+                    onClick={() => sendMessage()}
+                    className="px-5 py-2 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-black text-sm pixel-btn disabled:opacity-50"
+                  >
+                    {sending ? "输入中..." : "发送"}
                   </button>
                 </div>
               </div>
             </main>
+
+            {/* Right: Sticky Note Bulletin Board */}
+            <aside className="lg:col-span-3 bg-amber-50 rounded-xl p-3 overflow-y-auto pixel-box">
+              <div className="text-xs font-black text-slate-800 uppercase mb-2 px-1">📌 办公室八卦公告栏</div>
+              <div className="space-y-2">
+                {eventLogs.map((log, i) => (
+                  <div key={i} className="text-xs bg-[#fef9c3] border-2 border-slate-900 rounded-lg p-2.5 text-slate-900 font-medium leading-relaxed shadow-[2px_2px_0px_#0f172a]">
+                    {log}
+                  </div>
+                ))}
+              </div>
+            </aside>
           </div>
 
+          {crisis && session.status === "RUNNING" && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40">
+              <div className="bg-amber-50 rounded-xl max-w-md w-full p-6 pixel-box">
+                <h3 className="text-lg font-black text-rose-700 mb-2">{crisis.title}</h3>
+                <p className="text-sm text-slate-700 font-medium mb-5">{crisis.desc}</p>
+                <div className="space-y-2.5">
+                  {crisis.options.map((opt, oi) => (
+                    <button
+                      key={oi}
+                      onClick={() => triggerManagerAction("CRISIS_CHOICE", opt.deltas)}
+                      className="w-full text-left px-4 py-3 rounded-lg bg-white hover:bg-amber-200 text-sm text-slate-900 font-bold pixel-btn"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           {session.status !== "RUNNING" && (
-            <div className="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50">
-              <div className="bg-black border-2 border-emerald-400 max-w-md w-full p-6 text-center">
-                <div className="text-3xl mb-3">{session.status === "WON" ? "[CASE_DISMISSED]" : "[BUSTED]"}</div>
-                <h2 className="text-xl font-bold text-emerald-300 mb-2">{session.status === "WON" ? "成功骗过测谎终端！" : "谎言被当场拆穿！"}</h2>
-                <p className="text-xs text-emerald-200/80 mb-5">{session.endReason}</p>
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl max-w-md w-full p-6 text-center pixel-box">
+                <div className="text-4xl mb-3">{session.status === "WON" ? "🎉" : "💥"}</div>
+                <h2 className="text-2xl font-black text-slate-900 mb-2">
+                  {session.status === "WON" ? "项目成功上线！" : "团队彻底散伙了"}
+                </h2>
+                <p className="text-sm text-slate-700 font-medium mb-5">{session.endReason}</p>
                 <div className="flex justify-center gap-3">
-                  <button onClick={() => startLevel(cfg.levelId)} className="px-5 py-2 bg-emerald-500 text-black font-bold text-xs">RETRY &gt;</button>
-                  <button onClick={() => { stopMedia(); setSession(null); }} className="px-5 py-2 border border-emerald-500 text-emerald-300 text-xs">ARCHIVE</button>
+                  <button onClick={() => startLevel(cfg.levelId)} className="px-5 py-2.5 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-bold text-sm pixel-btn">
+                    再玩一局
+                  </button>
+                  <button onClick={() => setSession(null)} className="px-5 py-2.5 rounded-lg bg-amber-200 hover:bg-amber-100 text-slate-900 font-bold text-sm pixel-btn">
+                    返回大厅
+                  </button>
                 </div>
               </div>
             </div>

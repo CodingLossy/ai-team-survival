@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_12",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第12关 · 低成本短剧抢拍现场",
+  "description": "场地方临时涨价，男主角还一直忘词，3 天内必须杀青 50 集。",
+  "maxTurns": 10,
+  "secretTruth": "投资人明天要看成片前三集决定要不要打尾款。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 16000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_dir",
+      "name": "陈导",
+      "role": "暴躁导演",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "喇叭不离手，动不动喊'全组重来'。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_actor",
+      "name": "轩轩",
+      "role": "流量男主",
+      "avatarTag": "dreamer_pm",
+      "personaPrompt": "台词全靠念1234，一被批评就要罢演回房车。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "ASK_LEAVE",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_prop_mgr",
+      "name": "小胖",
+      "role": "统筹场务",
+      "avatarTag": "startup_sales",
+      "personaPrompt": "能搞定各种奇葩道具，但经常私下抱怨预算不够。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "BRING_BUDGET",
+        "OVERTIME_WORK",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

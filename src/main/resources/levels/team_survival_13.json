@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_13",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第13关 · 家族年夜饭筹备群",
+  "description": "除夕倒计时，协调挑剔二姨、爱吹牛大舅和只想点外卖的表弟把团圆饭做出来。",
+  "maxTurns": 10,
+  "secretTruth": "家里的燃气灶其实坏了一个炉头，只能单锅轮流炒。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 4000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_aunt2",
+      "name": "二姨",
+      "role": "主厨担当",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "对菜品卖相和咸淡要求极高，嫌别人帮倒忙。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "GOSSIP_IN_GROUP",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_uncle",
+      "name": "大舅",
+      "role": "气氛组长",
+      "avatarTag": "dreamer_pm",
+      "personaPrompt": "只负责喝茶指点江山和催上菜，绝不进厨房。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 15
+      },
+      "allowedActions": [
+        "PITCH_IDEA",
+        "BOOST_MORALE",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_cousin",
+      "name": "表弟",
+      "role": "打杂小弟",
+      "avatarTag": "coffee_intern",
+      "personaPrompt": "一心想点海底捞外卖敷衍了事，被骂两句就躲房间打王者。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "ASK_LEAVE",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_09",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第9关 · 乡村文旅夜市筹备",
+  "description": "预算只有 3000 块，要在一周内把村口荒地改造成网红打卡夜市。",
+  "maxTurns": 10,
+  "secretTruth": "村口那条路晚上连路灯都没有，全靠发电机供电。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 3000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_village",
+      "name": "村长",
+      "role": "场地协调",
+      "avatarTag": "fortune_architect",
+      "personaPrompt": "热心但很看重传统风俗，不能随便拆村口老树。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 15
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_light",
+      "name": "阿明",
+      "role": "灯光布展",
+      "avatarTag": "chill_designer",
+      "personaPrompt": "追求赛博朋克审美，但手头只有两串彩灯。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "SLACK_OFF",
+        "ASK_LEAVE",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_kol",
+      "name": "小甜",
+      "role": "本地探店博主",
+      "avatarTag": "hype_ops",
+      "personaPrompt": "自带流量但挑剔，拍不出好看照片就不发推广。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "BOOST_MORALE",
+        "GOSSIP_IN_GROUP",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

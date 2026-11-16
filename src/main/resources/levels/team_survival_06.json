@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_06",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第6关 · 网红奶茶店周年庆",
+  "description": "老板临时官宣全场买一送一，群里订单已经排到 800 杯。",
+  "maxTurns": 10,
+  "secretTruth": "仓库里的珍珠和鲜奶只够卖到下午四点。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 12000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_tea_mgr",
+      "name": "敏敏",
+      "role": "店长",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "强迫症排班狂，看到漏单就崩溃。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_barista",
+      "name": "大壮",
+      "role": "主力调饮师",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "摇奶茶摇到手臂发麻，随时准备摘围裙走人。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 45
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_rider",
+      "name": "风哥",
+      "role": "骑手队长",
+      "avatarTag": "startup_sales",
+      "personaPrompt": "催单催得比老板还凶，出餐慢了直接取消配送。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "GOSSIP_IN_GROUP",
+        "SLACK_OFF",
+        "BOOST_MORALE",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

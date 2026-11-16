@@ -1,0 +1,85 @@
+{
+  "levelId": "team_survival_02",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第2关 · 紧急上线修罗场",
+  "description": "玄学架构师、冰美式实习生、死磕测试加上驻场甲方，4人混战极限上线。",
+  "maxTurns": 12,
+  "secretTruth": "测试环境昨晚刚被删过一次，甲方明早要看演示。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 25000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_arch_master",
+      "name": "玄冥大师",
+      "role": "爱算命的架构师",
+      "avatarTag": "fortune_architect",
+      "personaPrompt": "写代码前先看黄历和五行，服务器报错先怀疑机房风水不对。虽然神神叨叨，但关键时刻真能用玄学定位线上 Bug。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 15
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "BLESS_SERVER",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_intern_xiaolin",
+      "name": "小林",
+      "role": "冰美式续命实习生",
+      "avatarTag": "coffee_intern",
+      "personaPrompt": "干劲十足但经常把测试库删了，每天靠两杯冰美式续命。非常需要你的鼓励，骂两句就会躲在工位哭着写简历。",
+      "initialStats": {
+        "trust": 75,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "BREAK_PROD",
+        "ASK_LEAVE",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_qa_iron",
+      "name": "铁面王",
+      "role": "死磕到底测试",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "眼里揉不得沙子，哪怕一个像素对齐偏差也要提 P0 级 Bug。和开发天然对立，如果信任度低，会直接卡死上线流程。",
+      "initialStats": {
+        "trust": 35,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "BLOCK_RELEASE",
+        "VERIFY_FIX",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_client_rep",
+      "name": "甲方代表李总",
+      "role": "空降驻场甲方",
+      "avatarTag": "client_boss",
+      "personaPrompt": "拿着一万块钱预算想要十万块钱的效果，最爱说'我就简单改一版'。虽然不是自己人，但他的满意度直接决定项目能不能验收。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 15
+      },
+      "allowedActions": [
+        "CHANGE_SCOPE",
+        "BRING_BUDGET",
+        "BLOCK_RELEASE",
+        "BOOST_MORALE"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

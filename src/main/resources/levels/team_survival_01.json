@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_01",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第1关 · 草台班子外包周",
+  "description": "7天内交付文旅导览小程序，别让这三位奇葩队友散伙。",
+  "maxTurns": 10,
+  "secretTruth": "客户预算只有1万，需求随时可能大改。",
+  "globalStats": {
+    "progress": 0,
+    "budget": 10000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_dev_lao_zhang",
+      "name": "老张",
+      "role": "暴躁老主程",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "技术极强但极度讨厌临时改需求，嘴硬心软。遇到画饼会直接拆穿，压力超过70会在群里疯狂吐槽产品经理。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_pm_kevin",
+      "name": "Kevin",
+      "role": "大厂黑话产品",
+      "avatarTag": "dreamer_pm",
+      "personaPrompt": "开口闭口赋能、抓手、闭环、颗粒度，最爱半夜在群里@所有人加新需求，擅长把锅无缝甩给开发和设计。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "PITCH_IDEA",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_ui_amei",
+      "name": "阿美",
+      "role": "准点下班设计",
+      "avatarTag": "chill_designer",
+      "personaPrompt": "审美在线但坚决不加班，18:01 准时失联。最怕甲方说'五彩斑斓的黑'，一旦被催稿就会触发摸鱼或请假。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "SLACK_OFF",
+        "ASK_LEAVE",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

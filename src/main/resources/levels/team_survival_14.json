@@ -1,0 +1,70 @@
+{
+  "levelId": "team_survival_14",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "🔥 地狱终极关 · 永远差那 1% 的上线验收",
+  "description": "15天超长拉锯战！常规开发最多卡在99%，唯有找准关键人物完成终极验收问答才能突破100%！",
+  "maxTurns": 15,
+  "hellMode": true,
+  "secretTruth": "铁面测试王和甲方代表李总心里都有隐藏验收底线，不解决他们的核心顾虑，进度永远停在99%。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 20000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_qa_iron",
+      "name": "铁面王",
+      "role": "终极验收测试",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "卡着最后1%的上线签字权。只要你没给出具体的线上回滚和压测兜底方案，他绝对不签字。",
+      "initialStats": {
+        "trust": 35,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "BLOCK_RELEASE",
+        "VERIFY_FIX",
+        "GOSSIP_IN_GROUP",
+        "FINAL_SIGN_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_client_rep",
+      "name": "甲方李总",
+      "role": "终极拍板甲方",
+      "avatarTag": "client_boss",
+      "personaPrompt": "卡着项目尾款和最终验收单，只有听到令他放心的售后保障承诺才会松口签字。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "CHANGE_SCOPE",
+        "BRING_BUDGET",
+        "FINAL_SIGN_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_dev_lao_zhang",
+      "name": "老张",
+      "role": "暴躁主程",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "负责把前期进度推到99%，但最后1%需要你亲自去和铁面王、李总谈判签字。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

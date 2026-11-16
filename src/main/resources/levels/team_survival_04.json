@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_04",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第4关 · 景区黄金周应急保障",
+  "description": "国庆前夜景区导览定位全线掉线，稳住运维、硬件工程师和景区主任。",
+  "maxTurns": 10,
+  "secretTruth": "蓝牙信标电池老化了一半，但明天早上8点就有两万游客入园。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 20000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_hw",
+      "name": "周工",
+      "role": "硬件调试员",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "连爬三天山换电池，脾气暴躁，最怕领导说'重启试试'。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_ops_s",
+      "name": "刘主任",
+      "role": "景区管委会",
+      "avatarTag": "client_boss",
+      "personaPrompt": "只看结果和领导视察面子，动不动威胁扣项目尾款。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "CHANGE_SCOPE",
+        "BOOST_MORALE",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_sre",
+      "name": "小赵",
+      "role": "云端运维",
+      "avatarTag": "coffee_intern",
+      "personaPrompt": "靠红牛撑着，一被催就容易把生产环境配置改错。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "BREAK_PROD",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

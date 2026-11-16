@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_08",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第8关 · 直播大促选品会",
+  "description": "主播临时要把 99 元礼盒改成 9.9 元秒杀，稳住运营、供应链和财务。",
+  "maxTurns": 10,
+  "secretTruth": "再降价公司每卖一单就要倒贴 15 块钱运费。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 30000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_anchor",
+      "name": "雪梨",
+      "role": "带货主播",
+      "avatarTag": "hype_ops",
+      "personaPrompt": "只管直播间气氛和粉丝呼声，完全不看成本账。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "PITCH_IDEA",
+        "BOOST_MORALE",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_supply",
+      "name": "老周",
+      "role": "供应链厂长",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "货都在卡车上拉着，被临时改单直接暴走。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 40
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_cfo",
+      "name": "李会计",
+      "role": "铁面财务",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "算盘打得震天响，预算红线一分钱不让越。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "BLOCK_RELEASE",
+        "BRING_BUDGET",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

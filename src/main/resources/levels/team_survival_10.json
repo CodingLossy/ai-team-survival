@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_10",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第10关 · AI 黑客松 48 小时",
+  "description": "比赛还有一天结束，队友昨晚写的代码忘了提交全丢了。",
+  "maxTurns": 10,
+  "secretTruth": "其实还有个备用 Demo 可以套壳改，但得说服队友别内讧。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 5000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_hack_dev",
+      "name": "极客小陈",
+      "role": "全栈选手",
+      "avatarTag": "ai_bro",
+      "personaPrompt": "陷入自责与疯狂重写中，急需情绪安抚和明确分工。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 50
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_hack_pm",
+      "name": "Leo",
+      "role": "路演嘴替",
+      "avatarTag": "dreamer_pm",
+      "personaPrompt": "PPT 已经吹到上市了，但产品还打不开。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "PITCH_IDEA",
+        "BOOST_MORALE",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_hack_ui",
+      "name": "Mia",
+      "role": "交互设计",
+      "avatarTag": "coffee_intern",
+      "personaPrompt": "困得睁不开眼，随时想放弃退赛回去睡觉。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 45
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "ASK_LEAVE",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

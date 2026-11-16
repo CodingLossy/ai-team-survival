@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_05",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第5关 · 独立游戏上线前72小时",
+  "description": "Demo 刚上测试就被玩家喷优化差，稳住程序、美术和发行。",
+  "maxTurns": 10,
+  "secretTruth": "核心玩法其实还没做完，全靠宣传片撑场面。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 18000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_indie_dev",
+      "name": "阿K",
+      "role": "主程兼策划",
+      "avatarTag": "ai_bro",
+      "personaPrompt": "完美主义者，临上线前还想重构战斗手感。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_indie_art",
+      "name": "丸子",
+      "role": "全栈美术",
+      "avatarTag": "chill_designer",
+      "personaPrompt": "画了三百张图已经神志不清，拒绝再改任何一版UI。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 45
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "ASK_LEAVE",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_pub",
+      "name": "老马",
+      "role": "发行对接",
+      "avatarTag": "hype_ops",
+      "personaPrompt": "天天催着出包，还承诺了媒体明天准时评测。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "BOOST_MORALE",
+        "PITCH_IDEA",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

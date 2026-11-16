@@ -13,8 +13,11 @@ public class NpcDecisionResponse {
     private String dialogue;
     private String thought;
     private String intentAction;
+    private String nextTurnIntent;
     @JsonProperty("isBluff")
     private boolean bluff;
+    @JsonProperty("isNonsense")
+    private boolean nonsense;
     private Map<String, Integer> globalStatDeltas = new HashMap<>();
     private Map<String, Integer> npcStatDeltas = new HashMap<>();
     private RumorPayload rumorToShare;

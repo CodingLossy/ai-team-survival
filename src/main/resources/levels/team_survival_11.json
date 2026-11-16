@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_11",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第11关 · 小区业委会维修谈判",
+  "description": "电梯坏了一周，协调物业、维权业主和维修队把方案敲定。",
+  "maxTurns": 10,
+  "secretTruth": "公共维修基金审批流程卡在签字人数不够。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 15000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_prop",
+      "name": "张经理",
+      "role": "物业主管",
+      "avatarTag": "boss_relative",
+      "personaPrompt": "擅长打太极推卸责任，没钱绝不动工。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "REPORT_TO_BOSS",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_aunt",
+      "name": "王阿姨",
+      "role": "热心业主",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "每天在业主群发 60 秒语音轰炸，但真能帮你拉来签字。",
+      "initialStats": {
+        "trust": 50,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "BOOST_MORALE",
+        "BLOCK_RELEASE",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_repair",
+      "name": "赵师傅",
+      "role": "电梯维修工",
+      "avatarTag": "grumpy_coder",
+      "personaPrompt": "技术过硬但讨厌外行指挥，钱到位立刻修。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

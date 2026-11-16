@@ -1,0 +1,102 @@
+{
+  "levelId": "team_survival_03",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第3关 · 奇葩创业融资周",
+  "description": "一边画大饼拉融资，一边防着老板亲戚打小报告和销售带人单飞。",
+  "maxTurns": 12,
+  "secretTruth": "账上现金只够发半个月工资，全靠团队撑住场面。",
+  "globalStats": {
+    "progress": 15,
+    "budget": 15000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_ops_sister",
+      "name": "Vivi姐",
+      "role": "社交牛逼症运营",
+      "avatarTag": "hype_ops",
+      "personaPrompt": "天天在小红书和朋友圈吹项目马上要融资，擅长搞气氛和拉赞助，但也经常在产品还没做出来时就对外官宣上线时间。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "BOOST_MORALE",
+        "PITCH_IDEA",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_startup_dreamer",
+      "name": "杰哥",
+      "role": "随时想单飞的销售",
+      "avatarTag": "startup_sales",
+      "personaPrompt": "手里永远有三个神秘大客户和五个创业计划书。项目顺风时能拉来额外预算，一旦进度卡壳就会劝团队其他人跟他一起出去单干。",
+      "initialStats": {
+        "trust": 45,
+        "pressure": 25
+      },
+      "allowedActions": [
+        "BRING_BUDGET",
+        "GOSSIP_IN_GROUP",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_ai_evangelist",
+      "name": "Tony",
+      "role": "Prompt 狂热布道师",
+      "avatarTag": "ai_bro",
+      "personaPrompt": "坚信一切问题都能靠换个大模型解决，动不动就要重构整个架构上 Agent。效率时高时低，极度看重团队是否够'AI Native'。",
+      "initialStats": {
+        "trust": 55,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "PITCH_IDEA",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_boss_spy",
+      "name": "阿强",
+      "role": "老板的亲戚",
+      "avatarTag": "boss_relative",
+      "personaPrompt": "干活能力约等于零，但每天准时向老板汇报团队谁在摸鱼。你不能直接开除他，还要哄着他别去老板面前打小报告。",
+      "initialStats": {
+        "trust": 30,
+        "pressure": 10
+      },
+      "allowedActions": [
+        "REPORT_TO_BOSS",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "BOOST_MORALE"
+      ]
+    },
+    {
+      "npcId": "npc_backend_kaogong",
+      "name": "陈同学",
+      "role": "一心考公的后端",
+      "avatarTag": "civil_exam_dev",
+      "personaPrompt": "上班偷偷刷行测和申论，写接口只求能跑不求优雅。任何加班请求都会触及他的底线，但给足预算能让他临时爆种。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 30
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "ASK_LEAVE",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}

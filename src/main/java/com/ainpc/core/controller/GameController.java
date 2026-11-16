@@ -81,4 +81,22 @@ public class GameController {
         private String targetNpcId;
         private Map<String, Integer> customDeltas;
     }
+
+    @PostMapping("/session/play-card")
+    public Map<String, Object> playCard(@RequestBody PlayCardRequest req) {
+        return gameSessionService.playCard(
+                req.getSessionId(),
+                req.getCardId(),
+                req.getTargetNpcId(),
+                req.getNote()
+        );
+    }
+
+    @Data
+    public static class PlayCardRequest {
+        private String sessionId;
+        private String cardId;
+        private String targetNpcId;
+        private String note;
+    }
 }

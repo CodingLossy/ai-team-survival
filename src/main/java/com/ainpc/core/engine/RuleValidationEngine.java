@@ -40,25 +40,49 @@ public class RuleValidationEngine {
         LevelConfig cfg = session.getLevelConfig();
         GameSessionState.NpcRuntimeState npcState = session.getNpcStates().get(profile.getNpcId());
 
-        // 1. Clamp stat deltas; in Hell Mode cap normal progress at 99
         int progressCap = (cfg.getGameType() == LevelConfig.GameType.TEAM_SURVIVAL && cfg.isHellMode()) ? 99 : 100;
         applyClampedDeltas(session.getGlobalStats(), decision.getGlobalStatDeltas(), 0, 100000, progressCap);
         applyClampedDeltas(npcState.getStats(), decision.getNpcStatDeltas(), 0, 100, 100);
 
-        // 2. Multimodal sensor penalties (Interrogation)
-        if (cfg.getGameType() == LevelConfig.GameType.INTERROGATION && sensors != null) {
-            int sensorPenalty = 0;
-            if (sensors.isBlinkSpike()) sensorPenalty += 8;
-            if (sensors.getPauseSeconds() > 8.0) sensorPenalty += 5;
-            if (sensors.isVoiceTremor()) sensorPenalty += 7;
-            if (sensorPenalty > 0) {
-                int current = session.getGlobalStats().getOrDefault("suspicion", 0);
-                session.getGlobalStats().put("suspicion", Math.min(100, current + sensorPenalty));
-                session.getGlobalEventLog().add("传感器捕捉到紧张异常，怀疑度 +" + sensorPenalty);
+        // Interrogation: sensor penalty + bsStreak nonsense penalty + bossRage
+        if (cfg.getGameType() == LevelConfig.GameType.INTERROGATION) {
+            if (sensors != null) {
+                int sensorPenalty = 0;
+                if (sensors.isBlinkSpike()) sensorPenalty += 8;
+                if (sensors.getPauseSeconds() > 8.0) sensorPenalty += 5;
+                if (sensors.isVoiceTremor()) sensorPenalty += 7;
+                if (sensorPenalty > 0) {
+                    int current = session.getGlobalStats().getOrDefault("suspicion", 0);
+                    session.getGlobalStats().put("suspicion", Math.min(100, current + sensorPenalty));
+                    session.getGlobalEventLog().add("传感器捕捉到紧张异常，怀疑度 +" + sensorPenalty);
+                }
+            }
+
+            int bsStreak = session.getGlobalStats().getOrDefault("bsStreak", 0);
+            int rage = session.getGlobalStats().getOrDefault("bossRage", 0);
+            if (decision.isNonsense()) {
+                bsStreak += 1;
+                rage = Math.min(100, rage + 30);
+                session.getGlobalStats().put("bsStreak", bsStreak);
+                session.getGlobalStats().put("bossRage", rage);
+
+                if (bsStreak >= 2) {
+                    int sus = session.getGlobalStats().getOrDefault("suspicion", 0);
+                    session.getGlobalStats().put("suspicion", Math.min(100, sus + 25));
+                    int pat = npcState.getStats().getOrDefault("patience", 70);
+                    npcState.getStats().put("patience", Math.max(0, pat - 20));
+                    result.getTriggeredHooks().add("连续装傻/答非所问(" + bsStreak + "次)激怒审讯官，怀疑度强制 +25%！");
+                } else if (rage >= 100) {
+                    int sus = session.getGlobalStats().getOrDefault("suspicion", 0);
+                    session.getGlobalStats().put("suspicion", Math.max(0, sus - 15));
+                    session.getGlobalStats().put("bossRage", 20);
+                    result.getTriggeredHooks().add("审讯官血压爆表彻底破防失态！趁乱怀疑度 -15%！");
+                }
+            } else {
+                session.getGlobalStats().put("bsStreak", 0);
             }
         }
 
-        // 3. Action whitelist check
         String action = decision.getIntentAction();
         if (action == null || !profile.getAllowedActions().contains(action)) {
             action = profile.getAllowedActions().isEmpty() ? "IDLE" : profile.getAllowedActions().get(0);
@@ -66,7 +90,6 @@ public class RuleValidationEngine {
             result.setOverrideReason("动作不在白名单内，已重置为默认动作");
         }
 
-        // 4. Hell Mode 99% -> 100% breakthrough check
         if (cfg.getGameType() == LevelConfig.GameType.TEAM_SURVIVAL && cfg.isHellMode()) {
             int curProgress = session.getGlobalStats().getOrDefault("progress", 0);
             if ("FINAL_SIGN_OFF".equals(action)) {
@@ -83,7 +106,6 @@ public class RuleValidationEngine {
             }
         }
 
-        // 5. Hard precondition checks
         if (cfg.getGameType() == LevelConfig.GameType.TEAM_SURVIVAL) {
             int pressure = npcState.getStats().getOrDefault("pressure", 0);
             if ("OVERTIME_WORK".equals(action) && pressure >= 90) {
@@ -99,13 +121,11 @@ public class RuleValidationEngine {
             }
         }
 
-        // 6. Track whether interrogator bluffed this turn
         if (cfg.getGameType() == LevelConfig.GameType.INTERROGATION) {
             boolean wasBluff = decision.isBluff() || "BLUFF_EVIDENCE".equals(action);
             session.getGlobalStats().put("lastWasBluff", wasBluff ? 1 : 0);
         }
 
-        // 7. Evaluate level rule hooks
         for (LevelConfig.RuleHook hook : cfg.getRuleHooks()) {
             Integer val = session.getGlobalStats().get(hook.getStatKey());
             if (val == null) val = npcState.getStats().get(hook.getStatKey());
@@ -117,7 +137,6 @@ public class RuleValidationEngine {
 
         result.setExecutedAction(action);
 
-        // 8. Cross-NPC rumor injection
         if (decision.getRumorToShare() != null
                 && decision.getRumorToShare().getTargetNpcId() != null
                 && decision.getRumorToShare().getContent() != null) {
@@ -128,7 +147,6 @@ public class RuleValidationEngine {
             }
         }
 
-        // 9. Update win/lose status
         evaluateEndState(session);
         return result;
     }

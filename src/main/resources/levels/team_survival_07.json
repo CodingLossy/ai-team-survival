@@ -1,0 +1,68 @@
+{
+  "levelId": "team_survival_07",
+  "gameType": "TEAM_SURVIVAL",
+  "title": "第7关 · 高校毕业设计冲刺周",
+  "description": "明天一早论文答辩，今天程序还跑不起来，稳住室友和导师。",
+  "maxTurns": 10,
+  "secretTruth": "组里三个人其实各写各的，接口文档根本没对齐。",
+  "globalStats": {
+    "progress": 10,
+    "budget": 2000
+  },
+  "winCondition": "progress >= 100",
+  "loseCondition": "activeCount == 0",
+  "npcs": [
+    {
+      "npcId": "npc_roommate",
+      "name": "强子",
+      "role": "划水室友",
+      "avatarTag": "civil_exam_dev",
+      "personaPrompt": "沉迷打游戏，口头禅是'我今晚肯定通宵写完'。",
+      "initialStats": {
+        "trust": 60,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "OVERTIME_WORK",
+        "SLACK_OFF",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_ppt",
+      "name": "林林",
+      "role": "PPT 担当",
+      "avatarTag": "chill_designer",
+      "personaPrompt": "只会做炫酷动画，对代码一窍不通，被催就哭。",
+      "initialStats": {
+        "trust": 65,
+        "pressure": 35
+      },
+      "allowedActions": [
+        "DELIVER_UI",
+        "ASK_LEAVE",
+        "SLACK_OFF",
+        "RESIGN"
+      ]
+    },
+    {
+      "npcId": "npc_prof",
+      "name": "王教授",
+      "role": "指导老师",
+      "avatarTag": "strict_qa",
+      "personaPrompt": "看一眼界面就能挑出十个逻辑硬伤，严厉但其实想让你们过。",
+      "initialStats": {
+        "trust": 40,
+        "pressure": 20
+      },
+      "allowedActions": [
+        "BLOCK_RELEASE",
+        "VERIFY_FIX",
+        "GOSSIP_IN_GROUP",
+        "RESIGN"
+      ]
+    }
+  ],
+  "ruleHooks": []
+}
